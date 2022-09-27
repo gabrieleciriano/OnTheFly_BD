@@ -10,7 +10,8 @@ namespace OnTheFly_BD
             Passageiro p = new Passageiro();
             ConexaoBD db = new ConexaoBD();
             SqlConnection conexaosql = new SqlConnection(db.Caminho());
-            p.CadastrarPassageiro(conexaosql);
+           // p.CadastrarPassageiro(conexaosql);
+            p.EditarPassageiro(conexaosql);
         }
     }
 }

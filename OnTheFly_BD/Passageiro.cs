@@ -38,7 +38,7 @@ namespace OnTheFly_BD
                 }
 
             } while (ValidarCpf(CPF) == false && CPF.Length < 11 || CPF.Length > 11);
-            
+
             do
             {
                 Console.WriteLine("Informe o Nome [Máximo 50 digítos]: ");
@@ -54,16 +54,16 @@ namespace OnTheFly_BD
 
             DateTime datanasc;
             Console.Write("Informe a Data de Nascimento: ");
-                while (!DateTime.TryParse(Console.ReadLine(), out datanasc))
+            while (!DateTime.TryParse(Console.ReadLine(), out datanasc))
+            {
+                if (datanasc > DateTime.Now)
                 {
-                    if (datanasc > DateTime.Now)
-                    {
-                        Console.WriteLine("Informe uma data de nascimento válida!");
-                    }
-                    else
-                        Console.Write("Informe a Data de Nascimento: ");
+                    Console.WriteLine("Informe uma data de nascimento válida!");
                 }
-                DataNascimento = datanasc.ToString("dd/MM/yyyy");
+                else
+                    Console.Write("Informe a Data de Nascimento: ");
+            }
+            DataNascimento = datanasc.ToString("dd/MM/yyyy");
 
             while (Sexo != 'M' && Sexo != 'F' && Sexo != 'N')
             {
@@ -106,68 +106,141 @@ namespace OnTheFly_BD
             } while (escolha != 1 && escolha != 2);
         }
 
-        //Já com o update
-        public void EditarPassageiro(SqlConnection conexaosql, String sql)
+        public void VisualizarPassageiro(SqlConnection conexaosql)
         {
+            Console.WriteLine("Informe o CPF para localizar o cadastro: ");
+            this.CPF = Console.ReadLine();
 
-            Console.WriteLine(">>>EDITAR CADASTRO<<<");
-            Console.WriteLine("Informe o número do CPF que deseja editar os dados cadastrados: ");
 
-            Console.WriteLine("1 - Editar NOME cadastrado");
-            Console.WriteLine("2 - Editar DATA DE NASCIMENTO cadastrado");
-            Console.WriteLine("3 - Editar SEXO cadastrado");
-            Console.WriteLine("4 - Editar DATA DO CADASTRO");
-            Console.WriteLine("5 - Editar SITUAÇÃO do CADASTRO ");
-            Console.WriteLine("\nEscolha entre as opções, o/os dados que deseja editar no Cadastro: ");
-            int op = int.Parse(Console.ReadLine());
-            switch (op)
+        }
+        //Já com o update
+        public void EditarPassageiro(SqlConnection conexaosql)
+        {
+            string sql;
+            Console.WriteLine("Informe o CPF para localizar o Cadastro:");
+            this.CPF = Console.ReadLine(); //TRATAR ERROS SE INFORMAR UM QUE NAO FOI CADASTRADO
+            int op;
+            do
             {
-                case 1:
-                    Console.WriteLine("Informe o novo NOME: ");
-                    Nome = Console.ReadLine();
-                    sql = $"UPDATE dbo.Passageiro SET Nome='{Nome}' WHERE CPF='{CPF}';";
-                    break;
+                Console.WriteLine(">>> EDITAR CADASTRO <<<");
+                Console.WriteLine("0 - SAIR");
+                Console.WriteLine("1 - NOME");
+                Console.WriteLine("2 - DATA DE NASCIMENTO");
+                Console.WriteLine("3 - SEXO");
+                Console.WriteLine("4 - DATA DO CADASTRO");
+                Console.WriteLine("5 - DATA DA ÚLTIMA COMPRA");
+                Console.WriteLine("6 - SITUAÇÃO DO CADASTRO ");
+                Console.WriteLine("\nEscolha entre as opções, o/os dados que deseja editar no Cadastro: ");
+                op = int.Parse(Console.ReadLine());
+                switch (op)
+                {
+                    case 0:
+                        Console.WriteLine("Aperte ENTER para sair!");
+                        Console.ReadKey();
+                        break;
+                    case 1:
+                        do
+                        {
+                            Console.WriteLine("Informe o Nome [Máximo 50 digítos]: ");
+                            Nome = Console.ReadLine();
+                            if (Nome.Length > 50)
+                            {
+                                Console.WriteLine("\nInforme um nome que contenha até 50 caracteres!");
 
-                case 2:
-                    DateTime datanasc;
-                    Console.Write("Informe a Data de Nascimento: ");
-                    do
-                    {
+                            }
+                            else
+                            {
+                                sql = $"UPDATE dbo.Passageiro SET Nome='{Nome}' WHERE CPF='{this.CPF}';";
+                                db = new ConexaoBD();
+                                db.Connection(conexaosql, sql);
+                                Console.ReadKey();
+                            }
+                        } while (Nome.Length > 50);
+                        break;
+
+                    case 2:
+                        DateTime datanasc;
+                        Console.Write("\nInforme a Data de Nascimento: ");
                         while (!DateTime.TryParse(Console.ReadLine(), out datanasc))
                         {
                             if (datanasc > DateTime.Now)
                             {
-                                Console.WriteLine("Informe uma data de nascimento válida!");
+                                Console.WriteLine("\nInforme uma data de nascimento válida!");
                             }
                             else
-                                Console.Write("Informe a Data de Nascimento: ");
+                                Console.Write("\nInforme a Data de Nascimento: ");
                         }
                         DataNascimento = datanasc.ToString("dd/MM/yyyy");
-                    } while (true);
-                    break;
+                        sql = $"UPDATE dbo.Passageiro SET DataNascimento='{DataNascimento}' WHERE CPF='{this.CPF}';";
+                        db = new ConexaoBD();
+                        db.Connection(conexaosql, sql);
+                        Console.ReadKey();
+                        break;
 
-                case 3:
-                    Console.WriteLine("Informe o gênero correto (M- Masculino, F - Feminino, N - Não desejo informar) : ");
-                    Sexo = char.Parse(Console.ReadLine());
-                    break;
+                    case 3:
+                        while (Sexo != 'M' && Sexo != 'F' && Sexo != 'N')
+                        {
+                            Console.WriteLine("\nInforme o sexo: [M - Masculino, F - Feminino, N - Não desejo informar] : ");
+                            Sexo = char.Parse(Console.ReadLine().ToUpper());
+                            if (Sexo != 'M' && Sexo != 'F' && Sexo != 'N')
+                            {
+                                Console.WriteLine("OPÇÃO INVÁLIDA! INFORME (M, F OU N) ");
+                            }
+                            else
+                            {
+                                sql = $"UPDATE dbo.Passageiro SET Sexo='{Sexo}' WHERE CPF='{this.CPF}';";
+                                //db = new ConexaoBD();
+                                db.Connection(conexaosql, sql);
+                                Console.ReadKey();
+                            }
+                        }
+                        break;
 
-                case 4:
-                    Console.WriteLine("Informe a DATA DO CADASTRO correta: ");
-                    DataCadastro = DateTime.Parse(Console.ReadLine());
-                    break;
+                    case 4:
+                        DateTime dt;
+                        Console.WriteLine("\nInforme a DATA DO CADASTRO: ");
+                        DataCadastro = DateTime.Parse(Console.ReadLine());
+                        while (!DateTime.TryParse(Console.ReadLine(), out dt))
+                        {
+                            dt.ToString("dd/MM/yyyy");
+                            sql = $"UPDATE dbo.Passageiro SET Data_Cadastro='{dt}' WHERE CPF='{this.CPF}';";
+                            db = new ConexaoBD();
+                            db.Connection(conexaosql, sql);
+                            Console.ReadKey();
+                        }
+                        break;
 
-                case 5:
-                    do
-                    {
-                        Console.WriteLine("Informe a SITUAÇÃO do cadastro correta (A - Ativo, I - Inativo): ");
-                        Situacao = char.Parse(Console.ReadLine());
+                    case 5:
+                        DateTime data;
+                        Console.WriteLine("\nInforme a Data da Última Compra: ");
+                        UltimaCompra = DateTime.Parse(Console.ReadLine());
+                        while (!DateTime.TryParse(Console.ReadLine(), out data))
+                        {
+                            data.ToString("dd/MM/yyyy");
+                            sql = $"UPDATE dbo.Passageiro SET UltimaCompra='{UltimaCompra}' WHERE CPF='{this.CPF}';";
+                            db = new ConexaoBD();
+                            db.Connection(conexaosql, sql);
+                            Console.ReadKey();
+                        }
 
-                    } while (Situacao != 'A' && Situacao != 'I');
-                    break;
+                        break;
+                    case 6:
+                        do
+                        {
+                            Console.WriteLine("Informe a SITUAÇÃO do cadastro correta (A - Ativo, I - Inativo): ");
+                            Situacao = char.Parse(Console.ReadLine());
+                            sql = $"UPDATE dbo.Passageiro SET Situacao='{Situacao}' WHERE CPF='{this.CPF}';";
+                            db = new ConexaoBD();
+                            db.Connection(conexaosql, sql);
+                            Console.ReadKey();
+                        } while (Situacao != 'A' && Situacao != 'I');
+                        break;
 
-                default:
-                    break;
-            }
+                    default:
+                        Console.WriteLine("\nINFORME UMA DAS OPÇÕES DO MENU!");
+                        break;
+                }
+            } while (op < 0 && op < 5);
         }
 
         public static bool ValidarCpf(string cpf)
