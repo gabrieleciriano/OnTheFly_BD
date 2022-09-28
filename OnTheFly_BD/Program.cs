@@ -23,7 +23,11 @@ namespace OnTheFly_BD
             //ca.VizualizarCompanhiaAtiva(conexaosql);
             //ca.DeletarCompAereaEspecifica(conexaosql);
             //ca.DeletarTodasCompanhias(conexaosql);
-            a.CadastrarAeronave(conexaosql);
+           // a.CadastrarAeronave(conexaosql);
+            //a.EditarAeronave(conexaosql);
+            //a.VisualizarAeronaveEspecifica(conexaosql);
+           // a.VisualizarAeronavesAtivas(conexaosql);
+
         }
     }
 }

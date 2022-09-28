@@ -16,12 +16,12 @@ namespace OnTheFly_BD
         public DateTime DataCadastro { get; set; }
         public char Situacao { get; set; }
         public ConexaoBD db;
+        ConexaoBD banco = new ConexaoBD();
 
         public CompanhiaAerea()
         {
 
         }
-        ConexaoBD banco = new ConexaoBD();
         public void CadastroCompanhiaAerea(SqlConnection conexaosql)
         {
             Console.WriteLine(">>>CADASTRO DE COMPANHIA AEREA<<<");
@@ -183,7 +183,7 @@ namespace OnTheFly_BD
             Console.WriteLine("Informe o CNPJ sem caracteres especiais para localizar o Cadastro:");
             this.CNPJ = Console.ReadLine(); //TRATAR ERROS SE INFORMAR UM QUE NAO FOI CADASTRADO
 
-            Console.WriteLine("***CADASTRO DE COMPANHIA AEREA***");
+            Console.WriteLine("***COMPANHIA AEREA CADASTRADA***");
 
             string sql = $"SELECT CNPJ,RazaoSocial,DataAbertura,UltimoVoo,DataCadastro,Situacao  FROM dbo.CompanhiaAerea WHERE CNPJ=('{this.CNPJ}');";
             db = new ConexaoBD();

@@ -155,12 +155,12 @@ namespace OnTheFly_BD
         }
         public void EditarAeronave(SqlConnection conexaosql)
         {
-            Console.WriteLine("Informe o CNPJ sem caracteres especiais para localizar o Cadastro:");
-            this.CNPJ = Console.ReadLine(); //TRATAR ERROS SE INFORMAR UM QUE NAO FOI CADASTRADO
+            Console.WriteLine("Informe a INSCRIÇÃO da Aeronave para localizar o Cadastro [XX-XXX]:");
+            this.Inscricao = Console.ReadLine(); //TRATAR ERROS SE INFORMAR UM QUE NAO FOI CADASTRADO
 
-            Console.WriteLine("***CADASTRO DE COMPANHIA AEREA***");
+            Console.WriteLine("***AERONAVE CADASTRADA***");
 
-            string sql = $"SELECT CNPJ,RazaoSocial,DataAbertura,UltimoVoo,DataCadastro,Situacao  FROM dbo.CompanhiaAerea WHERE CNPJ=('{this.CNPJ}');";
+            string sql = $"SELECT Inscricao,Capacidade,UltimaVenda,DataCadastro,Situacao,CompanhiaAerea  FROM dbo.Aeronave WHERE Inscricao=('{this.Inscricao}');";
             db = new ConexaoBD();
             db.Select(conexaosql, sql);
             SqlCommand cmd = new SqlCommand(sql, conexaosql);
@@ -168,98 +168,69 @@ namespace OnTheFly_BD
             {
                 while (reader.Read())
                 {
-                    Console.WriteLine($"CNPJ: {reader.GetString(0)}");
-                    Console.WriteLine($"Razão Social: {reader.GetString(1)}");
-                    Console.WriteLine($"Data de Abertura: {reader.GetDateTime(2).ToShortDateString()}");
-                    Console.WriteLine($"Data do último voo operado: {reader.GetDateTime(3)}");
-                    Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
-                    Console.WriteLine($"Situação: {reader.GetString(5)}");
+                    Console.WriteLine($"Inscricao: {reader.GetString(0)}");
+                    Console.WriteLine($"Capacidade: {reader.GetInt32(1)}");
+                    Console.WriteLine($"Data da última venda de passagem: {reader.GetDateTime(2)}");
+                    Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
+                    Console.WriteLine($"Situação: {reader.GetString(4)}");
+                    Console.WriteLine($"CNPJ da Companhia Aerea que a Aeronave pertence: {reader.GetString(5)}");
                 }
             }
             conexaosql.Close();
-            Console.WriteLine("\nAperte ENTER para finalizar a localização");
+            Console.WriteLine("\nAperte ENTER para finalizar a localização...");
             Console.ReadKey();
             //Console.Clear();
             int op;
             do
             {
-                Console.WriteLine(">>> EDITAR CADASTRO COMPANHIA AEREA <<<");
+                Console.WriteLine(">>> EDITAR CADASTRO AERONAVE<<<");
                 Console.WriteLine("0 - SAIR");
-                Console.WriteLine("1 - NOME [Razão Social]");
-                Console.WriteLine("2 - DATA DE ABERTURA");
-                Console.WriteLine("3 - ÚLTIMO VOO");
-                Console.WriteLine("4 - DATA DO CADASTRO");
-                Console.WriteLine("5 - SITUAÇÃO DO CADASTRO ");
+                Console.WriteLine("1 - CAPACIDADE");
+                Console.WriteLine("2 - DATA DA ÚLTIMA VENDA DE PASSAGEM");
+                Console.WriteLine("3 - DATA DO CADASTRO DA AERONAVE");
+                Console.WriteLine("4 - SITUAÇÃO DO CADASTRO ");
+                //Console.WriteLine("5- COMPANHIA AEREA QUE A AERONAVE PERTENCE");
                 Console.WriteLine("\nEscolha entre as opções, o/os dados que deseja editar no Cadastro: ");
                 op = int.Parse(Console.ReadLine());
                 switch (op)
                 {
                     case 0:
-                        Console.WriteLine("Aperte ENTER para sair!");
+                        Console.WriteLine("Aperte ENTER para sair...");
                         Console.ReadKey();
                         break;
                     case 1:
                         do
                         {
-                            Console.WriteLine("Informe a Razão Social [Máximo 50 digítos]: ");
-                            this.RazaoSocial = Console.ReadLine();
-                            if (this.RazaoSocial.Length > 50)
-                            {
-                                Console.WriteLine("\nInforme um nome que contenha até 50 caracteres!");
-
-                            }
-                            else
-                            {
-                                sql = $"UPDATE dbo.CompahiaAerea SET RazaoSocial='{this.RazaoSocial}' WHERE CNPJ='{this.CNPJ}';";
-                                db = new ConexaoBD();
-                                db.Connection(conexaosql, sql);
-                                Console.ReadKey();
-                            }
-                        } while (this.RazaoSocial.Length > 50);
-                        break;
-
-                    case 2:
-                        TimeSpan result;
-                        do
-                        {
-                            Console.Write("Informe a data de abertura da Companhia [mês/dia/ano] : ");
-                            DataAbertura = DateTime.Parse(Console.ReadLine());
-
-                            result = DateTime.Now - DataAbertura;
-
-                            if (result.Days / 30 < 6)
-                            {
-                                Console.WriteLine($"A companhia tem {result.Days / 30} meses");
-                                Console.WriteLine("\nO tempo é insufiente para finalizar o cadastro!");
-                                Console.WriteLine("Pressione ENTER para informar uma data válida!.");
-                                Console.ReadKey();
-                            }
-                        } while (result.Days / 30 < 6);
-                        sql = $"UPDATE dbo.CompanhiaAerea SET DataAbertura='{DataAbertura}' WHERE CNPJ='{this.CNPJ}';";
+                            Console.WriteLine("Informe a capacidade de pessoas que a Aeronave comporta: ");
+                            this.Capacidade = int.Parse(Console.ReadLine());
+                        } while (Capacidade < 0 || Capacidade > 999);
+                        sql = $"UPDATE dbo.Aeronave SET Capacidade='{this.Capacidade}' WHERE Inscricao='{this.Inscricao}';";
                         db = new ConexaoBD();
                         db.Connection(conexaosql, sql);
+                        Console.WriteLine("CADASTRO ATUALIZADO COM SUCESSO!");
                         Console.ReadKey();
                         break;
 
-                    case 3:
+                    case 2:
                         do
                         {
-                            Console.Write("Informe a data e a hora do último voo operado [mês/dia/ano] : ");
-                            UltimoVoo = DateTime.Parse(Console.ReadLine());
+                            Console.Write("Informe a data da última venda de passagem [mês/dia/ano] : ");
+                            this.UltimaVenda = DateTime.Parse(Console.ReadLine());
 
-                            if (UltimoVoo > DateTime.Now)
+                            if (this.UltimaVenda > DateTime.Today)
                             {
                                 Console.WriteLine("A data do último voo não pode ser maior que a data atual!");
 
                             }
-                        } while (UltimoVoo > DateTime.Now);
-                        sql = $"UPDATE dbo.CompanhiaAerea SET UltimoVoo='{UltimoVoo}' WHERE CNPJ='{this.CNPJ}';";
+                        } while (this.UltimaVenda > DateTime.Today);
+                        sql = $"UPDATE dbo.Aeronave SET UltimaVenda='{this.UltimaVenda}' WHERE Inscricao='{this.Inscricao}';";
                         db = new ConexaoBD();
                         db.Connection(conexaosql, sql);
+                        Console.WriteLine("CADASTRO ATUALIZADO COM SUCESSO!");
                         Console.ReadKey();
                         break;
 
-                    case 4:
+                    case 3:
                         DateTime dt;
                         Console.WriteLine("\nInforme a DATA DO CADASTRO: ");
                         dt = DateTime.Parse(Console.ReadLine());
@@ -272,32 +243,215 @@ namespace OnTheFly_BD
                             else
                             {
                                 dt.ToString("dd/MM/yyyy");
-                                sql = $"UPDATE dbo.Passageiro SET Data_Cadastro='{dt}' WHERE CNPJ='{this.CNPJ}';";
+                                sql = $"UPDATE dbo.Aeronave SET DataCadastro='{dt}' WHERE Inscricao='{this.Inscricao}';";
                                 db = new ConexaoBD();
                                 db.Connection(conexaosql, sql);
+                                Console.WriteLine("CADASTRO ATUALIZADO COM SUCESSO!");
                                 Console.ReadKey();
                             }
                         }
                         break;
 
-                    case 5:
+                    case 4:
                         do
                         {
                             Console.WriteLine("Informe a SITUAÇÃO do cadastro [A - Ativo, I - Inativo]: ");
                             Situacao = char.Parse(Console.ReadLine());
-                            sql = $"UPDATE dbo.CompanhiaAerea SET Situacao='{Situacao}' WHERE CNPJ='{this.CNPJ}';";
+                            sql = $"UPDATE dbo.Aeronave SET Situacao='{Situacao}' WHERE Inscricao='{this.Inscricao}';";
                             db = new ConexaoBD();
                             db.Connection(conexaosql, sql);
+                            Console.WriteLine("CADASTRO ATUALIZADO COM SUCESSO!");
                             Console.ReadKey();
                         } while (Situacao != 'A' && Situacao != 'I');
                         break;
+
+                    case 5:
+                        break;
+
                     default:
                         Console.WriteLine("\nINFORME UMA DAS OPÇÕES DO MENU!");
                         break;
                 }
             } while (op < 0 && op < 5);
         }
+        public void VisualizarAeronaveEspecifica(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Informe a INSCRIÇÃO da Aeronave para localizar o Cadastro [XX-XXX]:");
+            this.Inscricao = Console.ReadLine(); //TRATAR ERROS SE INFORMAR UM QUE NAO FOI CADASTRADO
 
-
+            Console.WriteLine("Deseja visualizar os dados dessa Aeronave específica?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    Console.Clear();
+                    Console.WriteLine("***DADOS DO CADASTRO DA AERONAVE***");
+                    Console.WriteLine("\n");
+                    string sql = $"SELECT Inscricao,Capacidade,UltimaVenda,DataCadastro,Situacao,CompanhiaAerea  FROM dbo.Aeronave WHERE Inscricao=('{this.Inscricao}');";
+                    db = new ConexaoBD();
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"Inscricao: {reader.GetString(0)}");
+                            Console.WriteLine($"Capacidade: {reader.GetInt32(1)}");
+                            Console.WriteLine($"Data da última venda de passagem: {reader.GetDateTime(2)}");
+                            Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
+                            Console.WriteLine($"Situação: {reader.GetString(4)}");
+                            Console.WriteLine($"CNPJ da Companhia Aerea que a Aeronave pertence: {reader.GetString(5)}");
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a localização");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("A localização do cadastro foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
+        public void VisualizarAeronavesAtivas(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Deseja visualizar o cadastro ATIVO de TODAS as Aeronaves?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    Console.Clear();
+                    Console.WriteLine("***DADOS DOS CADASTROS DAS AERONAVES***");
+                    Console.WriteLine("\n");
+                    string sql = $"SELECT Inscricao,Capacidade,UltimaVenda,DataCadastro,Situacao,CompanhiaAerea  FROM dbo.Aeronave WHERE Situacao = ('A');";
+                    db = new ConexaoBD();
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"Inscricao: {reader.GetString(0)}");
+                            Console.WriteLine($"Capacidade: {reader.GetInt32(1)}");
+                            Console.WriteLine($"Data da última venda de passagem: {reader.GetDateTime(2)}");
+                            Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
+                            Console.WriteLine($"Situação: {reader.GetString(4)}");
+                            Console.WriteLine($"CNPJ da Companhia Aerea que a Aeronave pertence: {reader.GetString(5)}");
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a localização");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("A localização do cadastro foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
+        public void DeletarAeronaveEspecifica(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Informe a INSCRIÇÃO da Aeronave para localizar o Cadastro [XX-XXX]:");
+            this.Inscricao = Console.ReadLine();
+            Console.Clear();
+            Console.WriteLine("***DADOS DO CADASTRO DA AERONAVE***");
+            Console.WriteLine("\n");
+            string sql = $"SELECT Inscricao,Capacidade,UltimaVenda,DataCadastro,Situacao,CompanhiaAerea  FROM dbo.Aeronave WHERE Inscricao=('{this.Inscricao}');";
+            db = new ConexaoBD();
+            db.Select(conexaosql, sql);
+            SqlCommand cmd = new SqlCommand(sql, conexaosql);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($"Inscricao: {reader.GetString(0)}");
+                    Console.WriteLine($"Capacidade: {reader.GetInt32(1)}");
+                    Console.WriteLine($"Data da última venda de passagem: {reader.GetDateTime(2)}");
+                    Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
+                    Console.WriteLine($"Situação: {reader.GetString(4)}");
+                    Console.WriteLine($"CNPJ da Companhia Aerea que a Aeronave pertence: {reader.GetString(5)}");
+                }
+            }
+            conexaosql.Close();
+            Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+            Console.ReadKey();
+            Console.WriteLine("\nDeseja realmente DELETAR esse cadastro ? Não será possível repensar essa ação...");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    sql = $"DELETE FROM dbo.Aeronave WHERE Inscricao=('{this.Inscricao}');";
+                    db = new ConexaoBD();
+                    db.Connection(conexaosql, sql);
+                    cmd = new SqlCommand(sql, conexaosql);
+                    Console.WriteLine("CADASTRO DELETADO COM SUCESSO!");
+                    Console.WriteLine("Pressione ENTER para sair...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("Exclusão do cadastro CANCELADA!!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
+        public void DeletarTodasAeronaves(SqlConnection conexaosql)
+        {
+            Console.WriteLine("***DELETAR CADASTRO DE AERONAVES***");
+            Console.WriteLine("\n");
+            string sql = $"SELECT Inscricao,Capacidade,UltimaVenda,DataCadastro,Situacao,CompanhiaAerea  FROM dbo.Aeronave WHERE Situacao = ('A');";
+            db = new ConexaoBD();
+            db.Select(conexaosql, sql);
+            SqlCommand cmd = new SqlCommand(sql, conexaosql);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($"Inscricao: {reader.GetString(0)}");
+                    Console.WriteLine($"Capacidade: {reader.GetInt32(1)}");
+                    Console.WriteLine($"Data da última venda de passagem: {reader.GetDateTime(2)}");
+                    Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
+                    Console.WriteLine($"Situação: {reader.GetString(4)}");
+                    Console.WriteLine($"CNPJ da Companhia Aerea que a Aeronave pertence: {reader.GetString(5)}");
+                }
+            }
+            conexaosql.Close();
+            Console.WriteLine("\nAperte ENTER para finalizar a visualização...");
+            Console.ReadKey();
+            Console.Clear();
+            Console.WriteLine("\nDeseja realmente DELETAR TODOS os CADASTROS? Não será possível repensar essa ação... ");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    sql = $"DELETE FROM dbo.Aeronave";
+                    db = new ConexaoBD();
+                    db.Connection(conexaosql, sql);
+                    cmd = new SqlCommand(sql, conexaosql);
+                    Console.WriteLine("\nCADASTROS DELETADOS COM SUCESSO!");
+                    Console.WriteLine("Pressione ENTER para sair...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("Exclusão de cadastros CANCELADA!!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
     }
 }
+
+
+
+
