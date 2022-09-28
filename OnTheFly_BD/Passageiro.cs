@@ -121,11 +121,25 @@ namespace OnTheFly_BD
                 opc = int.Parse(Console.ReadLine());
                 if (opc == 1)
                 {
-                    Console.Clear();
-                    string sql = $"SELECT CPF, Nome, DataNascimento, Sexo, Data_Cadastro, UltimaCompra, Situacao  FROM dbo.Passageiro WHERE CPF = ('{this.CPF}');";
+                    string sql = $"SELECT CPF,Nome,DataNascimento,Sexo,Data_Cadastro,UltimaCompra,Situacao  FROM dbo.Passageiro WHERE CPF=('{this.CPF}');";
                     db = new ConexaoBD();
-                    db.Connection(conexaosql, sql);
-                    Console.WriteLine("Aperte ENTER para finalizar a localização");
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"Nome: {reader.GetString(1)}");
+                            Console.WriteLine($"CPF: {reader.GetString(0)}");
+                            Console.WriteLine($"Data de Nascimento: {reader.GetDateTime(2).ToShortDateString()}");
+                            Console.WriteLine($"Sexo: {reader.GetString(3)}");
+                            Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
+                            Console.WriteLine($"Data da Última Compra: {reader.GetDateTime(5).ToShortDateString()}");
+                            Console.WriteLine($"Situação: {reader.GetString(6)}");
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a localização");
                     Console.ReadKey();
                 }
                 else
@@ -148,16 +162,30 @@ namespace OnTheFly_BD
                     Console.Clear();
                     string sql = $"SELECT CPF, Nome, DataNascimento, Sexo, Data_Cadastro, UltimaCompra, Situacao  FROM dbo.Passageiro WHERE Situacao = ('A');";
                     db = new ConexaoBD();
-                    db.Connection(conexaosql, sql);
-                    Console.WriteLine("Aperte ENTER para finalizar a visualização");
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"Nome: {reader.GetString(1)}");
+                            Console.WriteLine($"CPF: {reader.GetString(0)}");
+                            Console.WriteLine($"Data de Nascimento: {reader.GetDateTime(2).ToShortDateString()}");
+                            Console.WriteLine($"Sexo: {reader.GetString(3)}");
+                            Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
+                            Console.WriteLine($"Data da Última Compra: {reader.GetDateTime(5).ToShortDateString()}");
+                            Console.WriteLine($"Situação: {reader.GetString(6)}");
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a visualização");
                     Console.ReadKey();
                 }
                 else
                 {
-                    Console.WriteLine("A visualização dos cadastros foi cancelada!");
+                    Console.WriteLine("\nA visualização dos cadastros foi cancelada!");
                 }
             } while (opc != 1 && opc != 2);
-
         }
         //Já com o update
         public void EditarPassageiro(SqlConnection conexaosql)

@@ -31,10 +31,16 @@ namespace OnTheFly_BD
             conexaosql.Close();
 
         }
-        //public string Localizar()
-        //{
+        public void Select(SqlConnection conexaosql, String sql)
+        {
 
-        //}
+            conexaosql.Open();
+            SqlCommand cmd = new SqlCommand(sql, conn);
+            cmd.Connection = conexaosql;
+            cmd.ExecuteNonQuery();
+
+        }
+        
     }
 }
 
