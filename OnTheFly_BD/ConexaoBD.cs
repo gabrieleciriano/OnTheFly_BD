@@ -29,7 +29,6 @@ namespace OnTheFly_BD
             cmd.Connection = conexaosql;
             cmd.ExecuteNonQuery();
             conexaosql.Close();
-
         }
         public void Select(SqlConnection conexaosql, String sql)
         {
@@ -38,7 +37,6 @@ namespace OnTheFly_BD
             SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Connection = conexaosql;
             cmd.ExecuteNonQuery();
-
         }
         
     }

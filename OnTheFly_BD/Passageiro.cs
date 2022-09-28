@@ -17,7 +17,7 @@ namespace OnTheFly_BD
         public DateTime DataCadastro { get; set; } //talvez colocar como string pra converter
         public char Situacao { get; set; } //A - Ativo I - Inativo
         public ConexaoBD db;
-        
+
         //Nao se pode deletar nenhum cadastro e sim inativar para nao aparecer na lista 
         public Passageiro()
         {
@@ -187,7 +187,6 @@ namespace OnTheFly_BD
                 }
             } while (opc != 1 && opc != 2);
         }
-        //Já com o update
         public void EditarPassageiro(SqlConnection conexaosql)
         {
             string sql;
@@ -316,7 +315,102 @@ namespace OnTheFly_BD
                 }
             } while (op < 0 && op < 5);
         }
+        public void DeletarPassageiroEspecifico(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Informe o CPF para localizar o cadastro: ");
+            this.CPF = Console.ReadLine();
+            Console.WriteLine("***CADASTRO DO PASSAGEIRO***");
 
+            string sql = $"SELECT CPF,Nome,DataNascimento,Sexo,Data_Cadastro,UltimaCompra,Situacao  FROM dbo.Passageiro WHERE CPF=('{this.CPF}');";
+            db = new ConexaoBD();
+            db.Select(conexaosql, sql);
+            SqlCommand cmd = new SqlCommand(sql, conexaosql);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($"Nome: {reader.GetString(1)}");
+                    Console.WriteLine($"CPF: {reader.GetString(0)}");
+                    Console.WriteLine($"Data de Nascimento: {reader.GetDateTime(2).ToShortDateString()}");
+                    Console.WriteLine($"Sexo: {reader.GetString(3)}");
+                    Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
+                    Console.WriteLine($"Data da Última Compra: {reader.GetDateTime(5).ToShortDateString()}");
+                    Console.WriteLine($"Situação: {reader.GetString(6)}");
+                }
+            }
+            conexaosql.Close();
+            Console.WriteLine("\nAperte ENTER para finalizar a localização");
+            Console.ReadKey();
+            Console.WriteLine("\nDeseja realmente DELETAR esse cadastro ?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    sql = $"DELETE FROM dbo.Passageiro WHERE CPF=('{this.CPF}');";
+                    db = new ConexaoBD();
+                    db.Connection(conexaosql, sql);
+                    cmd = new SqlCommand(sql, conexaosql);
+                    Console.WriteLine("CADASTRO DELETADO COM SUCESSO!");
+                    Console.WriteLine("Pressione ENTER para sair");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("Exclusão do cadastro CANCELADA!!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
+        public void DeletarTodosPassageiros(SqlConnection conexaosql)
+        {
+           
+            Console.WriteLine("***DELETAR CADASTRO DE PASSAGEIROS***");
+
+            string sql = $"SELECT CPF,Nome,DataNascimento,Sexo,Data_Cadastro,UltimaCompra,Situacao  FROM dbo.Passageiro";
+            Console.WriteLine("\n");
+            db = new ConexaoBD();
+            db.Select(conexaosql, sql);
+            SqlCommand cmd = new SqlCommand(sql, conexaosql);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($"Nome: {reader.GetString(1)}");
+                    Console.WriteLine($"CPF: {reader.GetString(0)}");
+                    Console.WriteLine($"Data de Nascimento: {reader.GetDateTime(2).ToShortDateString()}");
+                    Console.WriteLine($"Sexo: {reader.GetString(3)}");
+                    Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
+                    Console.WriteLine($"Data da Última Compra: {reader.GetDateTime(5).ToShortDateString()}");
+                    Console.WriteLine($"Situação: {reader.GetString(6)}");
+                }
+            }
+            conexaosql.Close();
+            Console.WriteLine("\nAperte ENTER para finalizar a visualização...");
+            Console.ReadKey();
+            Console.WriteLine("\nDeseja realmente DELETAR TODOS os CADASTROS? Não será possível repensar essa ação... ?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    sql = $"DELETE FROM dbo.Passageiro";
+                    db = new ConexaoBD();
+                    db.Connection(conexaosql, sql);
+                    cmd = new SqlCommand(sql, conexaosql);
+                    Console.WriteLine("\nCADASTROS DELETADOS COM SUCESSO!");
+                    Console.WriteLine("Pressione ENTER para sair");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("Exclusão de cadastros CANCELADA!!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
         public static bool ValidarCpf(string cpf)
         {
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
