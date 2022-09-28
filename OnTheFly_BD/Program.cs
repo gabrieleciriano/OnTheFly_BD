@@ -9,6 +9,7 @@ namespace OnTheFly_BD
         {
             Passageiro p = new Passageiro();
             CompanhiaAerea ca = new CompanhiaAerea();
+            Aeronave a = new Aeronave();
             ConexaoBD db = new ConexaoBD();
             SqlConnection conexaosql = new SqlConnection(db.Caminho());
             //p.CadastrarPassageiro(conexaosql);
@@ -22,6 +23,7 @@ namespace OnTheFly_BD
             //ca.VizualizarCompanhiaAtiva(conexaosql);
             //ca.DeletarCompAereaEspecifica(conexaosql);
             //ca.DeletarTodasCompanhias(conexaosql);
+            a.CadastrarAeronave(conexaosql);
         }
     }
 }
