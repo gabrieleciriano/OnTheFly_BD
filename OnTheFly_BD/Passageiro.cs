@@ -17,15 +17,12 @@ namespace OnTheFly_BD
         public DateTime DataCadastro { get; set; } //talvez colocar como string pra converter
         public char Situacao { get; set; } //A - Ativo I - Inativo
         public ConexaoBD db;
+        ConexaoBD banco = new ConexaoBD();
 
-        //Nao se pode deletar nenhum cadastro e sim inativar para nao aparecer na lista 
         public Passageiro()
         {
 
         }
-        ConexaoBD banco = new ConexaoBD();
-
-        //Já com o insert
         public void CadastrarPassageiro(SqlConnection conexaosql)
         {
             Console.WriteLine(">>>CADASTRO DE PASSAGEIRO<<<");
@@ -107,7 +104,6 @@ namespace OnTheFly_BD
                     Console.WriteLine("CADASTRO DE PASSAGEIRO CANCELADO!");
             } while (escolha != 1 && escolha != 2);
         }
-
         public void VisualizarPassageiro(SqlConnection conexaosql)
         {
             //SELECT DE UM PASSAGEIRO ESPECIFICO
@@ -272,7 +268,7 @@ namespace OnTheFly_BD
                     case 4:
                         DateTime dt;
                         Console.WriteLine("\nInforme a DATA DO CADASTRO: ");
-                        DataCadastro = DateTime.Parse(Console.ReadLine());
+                        dt = DateTime.Parse(Console.ReadLine());
                         while (!DateTime.TryParse(Console.ReadLine(), out dt))
                         {
                             dt.ToString("dd/MM/yyyy");
@@ -286,11 +282,11 @@ namespace OnTheFly_BD
                     case 5:
                         DateTime data;
                         Console.WriteLine("\nInforme a Data da Última Compra: ");
-                        UltimaCompra = DateTime.Parse(Console.ReadLine());
+                        data = DateTime.Parse(Console.ReadLine());
                         while (!DateTime.TryParse(Console.ReadLine(), out data))
                         {
                             data.ToString("dd/MM/yyyy");
-                            sql = $"UPDATE dbo.Passageiro SET UltimaCompra='{UltimaCompra}' WHERE CPF='{this.CPF}';";
+                            sql = $"UPDATE dbo.Passageiro SET UltimaCompra='{data}' WHERE CPF='{this.CPF}';";
                             db = new ConexaoBD();
                             db.Connection(conexaosql, sql);
                             Console.ReadKey();
@@ -300,7 +296,7 @@ namespace OnTheFly_BD
                     case 6:
                         do
                         {
-                            Console.WriteLine("Informe a SITUAÇÃO do cadastro correta (A - Ativo, I - Inativo): ");
+                            Console.WriteLine("Informe a SITUAÇÃO do cadastro correta [A - Ativo, I - Inativo]: ");
                             Situacao = char.Parse(Console.ReadLine());
                             sql = $"UPDATE dbo.Passageiro SET Situacao='{Situacao}' WHERE CPF='{this.CPF}';";
                             db = new ConexaoBD();
@@ -543,6 +539,3 @@ namespace OnTheFly_BD
 
     }
 }
-
-
-

@@ -28,12 +28,12 @@ namespace OnTheFly_BD
             //CNPJ
             do
             {
-                Console.Write("\nInforme o seu Cadastro Nacional da Pessoa Jurídica [CNPJ]:  ");
+                Console.Write("Informe o seu Cadastro Nacional da Pessoa Jurídica [CNPJ] sem caracteres especiais:  ");
                 CNPJ = Console.ReadLine();
                 if (ValidarCnpj(CNPJ) == false)
                 {
                     Console.WriteLine("\nNÚMERO DE CNPJ INVÁLIDO!");
-                    Console.WriteLine("PRESSIONE QUALQUER TECLA PARA INFORMAR NOVAMENTE!");
+                    Console.WriteLine("Pressione ENTER para informar novamente...");
                     Console.ReadKey();
                 }
             } while (ValidarCnpj(CNPJ) == false);
@@ -41,11 +41,11 @@ namespace OnTheFly_BD
             //Razão Social
             do
             {
-                Console.Write("\nInforme o nome da Razão Social [Máximo 50 dígitos]:  ");
+                Console.Write("Informe o nome da Razão Social [Máximo 50 dígitos]:  ");
                 RazaoSocial = Console.ReadLine();
                 if (RazaoSocial.Length > 50)
                 {
-                    Console.WriteLine("\nIMPOSSÍVEL CADASTRAR.\nTENTE NOVAMENTE!");
+                    Console.WriteLine("\nInforme um nome que contenha até 50 caracteres!");
                 }
             } while (RazaoSocial.Length > 50);
 
@@ -53,16 +53,16 @@ namespace OnTheFly_BD
             TimeSpan result;
             do
             {
-                Console.Write("\nInforme a data de abertura da Companhia: [mês/dia/ano]");
+                Console.Write("Informe a data de abertura da Companhia [mês/dia/ano] : ");
                 DataAbertura = DateTime.Parse(Console.ReadLine());
 
                 result = DateTime.Now - DataAbertura;
 
                 if (result.Days / 30 < 6)
                 {
-                    Console.WriteLine($"\nA companhia tem {result.Days / 30} meses");
+                    Console.WriteLine($"A companhia tem {result.Days / 30} meses");
                     Console.WriteLine("\nO tempo é insufiente para finalizar o cadastro!");
-                    Console.WriteLine("Pressione qualquer tecla para continuar...");
+                    Console.WriteLine("Pressione ENTER para informar uma data válida!");
                     Console.ReadKey();
                 }
             } while (result.Days / 30 < 6);
@@ -98,68 +98,323 @@ namespace OnTheFly_BD
                     Console.WriteLine("CADASTRO DE COMPANHIA AEREA CANCELADO!");
             } while (escolha != 1 && escolha != 2);
         }
-
-        public void EditarCompAerea()
+        public void VisualizarCompanhiaEspecifica(SqlConnection conexaosql)
         {
-            int op;
-
+            Console.WriteLine("Informe o CNPJ para localizar o cadastro: ");
+            this.CNPJ = Console.ReadLine();
+            Console.WriteLine("Deseja visualizar os dados do cadastro de uma companhia aerea específica?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
             do
             {
-                Console.Write("Escolha o dado que você deseja editar: ");
-                Console.Write("1 - Editar RAZÃO SOCIAL ");
-                Console.Write("2 - Editar DATA DE ABERTURA ");
-                Console.Write("3 - Editar ÚLTIMO VOO ");
-                Console.Write("4 - Editar NOVA DATA CADASTRO (ALTERAÇÃO) ");
-                Console.Write("0 - SAIR ");
-                op = int.Parse(Console.ReadLine());
-
-                if (op != 1 && op != 2 && op != 3 && op != 4 && op != 0)
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
                 {
-                    Console.WriteLine("Opção inválida!");
-                }
-
-            } while (op != 1 && op != 2 && op != 3 && op != 4 && op != 0);
-
-            switch (op)
-            {
-                case 1:
-                    Console.Write("Informe a RAZÃO SOCIAL correta: ");
-                    string razaoSocial = Console.ReadLine();
-                    RazaoSocial = razaoSocial;
-                    break;
-
-                case 2:
-                    Console.Write("Informe a DATA DE ABERTURA correta: ");
-                    DateTime dataAbertura = DateTime.Parse(Console.ReadLine());
-                    DataAbertura = dataAbertura;
-                    break;
-
-                case 3:
-                    Console.Write("Informe a DATA DO ÚLTIMO VOO correta: ");
-                    DateTime ultimoVoo = DateTime.Parse(Console.ReadLine());
-                    UltimoVoo = ultimoVoo;
-                    break;
-
-                case 4:
-                    do
+                    Console.Clear();
+                    Console.WriteLine("***CADASTRO DA COMPANHIA AEREA***");
+                    Console.WriteLine("\n");
+                    string sql = $"SELECT CNPJ,RazaoSocial,DataAbertura,UltimoVoo,DataCadastro,Situacao  FROM dbo.CompanhiaAerea WHERE CNPJ=('{this.CNPJ}');";
+                    db = new ConexaoBD();
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        Console.WriteLine("Informe a SITUAÇÃO do cadastro correta (A - Ativo, I - Inativo): ");
-                        char situacao = char.Parse(Console.ReadLine());
-                        Situacao = situacao;
-
-                    } while (Situacao != 'A' && Situacao != 'I');
-                    break;
-
-                case 0:
-                    break;
-            }
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"CNPJ: {reader.GetString(0)}");
+                            Console.WriteLine($"Razão Social: {reader.GetString(1)}");
+                            Console.WriteLine($"Data de Abertura: {reader.GetDateTime(2).ToShortDateString()}");
+                            Console.WriteLine($"Data e Hora do último voo: {reader.GetDateTime(3)}");
+                            Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
+                            Console.WriteLine($"Situação: {reader.GetString(5)}");
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a localização");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("A localização do cadastro foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
         }
+        public void VizualizarCompanhiaAtiva(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Deseja visualizar o cadastro ATIVO de TODAS as Companhias Aereas?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    Console.Clear();
+                    Console.WriteLine("***CADASTRO DAS COMPANHIAS AEREAS***");
+                    Console.WriteLine("\n");
+                    string sql = $"SELECT CNPJ, RazaoSocial, DataAbertura, UltimoVoo, DataCadastro, Situacao  FROM dbo.CompanhiaAerea WHERE Situacao = ('A');";
+                    db = new ConexaoBD();
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"CNPJ: {reader.GetString(0)}");
+                            Console.WriteLine($"Razão Social: {reader.GetString(1)}");
+                            Console.WriteLine($"Data de Abertura: {reader.GetDateTime(2).ToShortDateString()}");
+                            Console.WriteLine($"Data e Hora do último voo: {reader.GetDateTime(3)}");
+                            Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
+                            Console.WriteLine($"Situação: {reader.GetString(5)}");
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a visualização");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("\nA visualização dos cadastros foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
+        public void EditarCompahiaAerea(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Informe o CNPJ sem caracteres especiais para localizar o Cadastro:");
+            this.CNPJ = Console.ReadLine(); //TRATAR ERROS SE INFORMAR UM QUE NAO FOI CADASTRADO
 
-        //public override string ToString()
-        //{
-        //    return "\nCNPJ: " + CNPJ + "\nRazão Social: " + RazaoSocial + "\nData de Abertura: " + DataAbertura + "\nÚltimo Voo: " + UltimoVoo + "\nData de Cadastro: " + DataCadastro + "\nSituação: " + SituacaoCA;
-        //}
+            Console.WriteLine("***CADASTRO DE COMPANHIA AEREA***");
 
+            string sql = $"SELECT CNPJ,RazaoSocial,DataAbertura,UltimoVoo,DataCadastro,Situacao  FROM dbo.CompanhiaAerea WHERE CNPJ=('{this.CNPJ}');";
+            db = new ConexaoBD();
+            db.Select(conexaosql, sql);
+            SqlCommand cmd = new SqlCommand(sql, conexaosql);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($"CNPJ: {reader.GetString(0)}");
+                    Console.WriteLine($"Razão Social: {reader.GetString(1)}");
+                    Console.WriteLine($"Data de Abertura: {reader.GetDateTime(2).ToShortDateString()}");
+                    Console.WriteLine($"Data do último voo operado: {reader.GetDateTime(3)}");
+                    Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
+                    Console.WriteLine($"Situação: {reader.GetString(5)}");
+                }
+            }
+            conexaosql.Close();
+            Console.WriteLine("\nAperte ENTER para finalizar a localização");
+            Console.ReadKey();
+            //Console.Clear();
+            int op;
+            do
+            {
+                Console.WriteLine(">>> EDITAR CADASTRO COMPANHIA AEREA <<<");
+                Console.WriteLine("0 - SAIR");
+                Console.WriteLine("1 - NOME [Razão Social]");
+                Console.WriteLine("2 - DATA DE ABERTURA");
+                Console.WriteLine("3 - ÚLTIMO VOO");
+                Console.WriteLine("4 - DATA DO CADASTRO");
+                Console.WriteLine("5 - SITUAÇÃO DO CADASTRO ");
+                Console.WriteLine("\nEscolha entre as opções, o/os dados que deseja editar no Cadastro: ");
+                op = int.Parse(Console.ReadLine());
+                switch (op)
+                {
+                    case 0:
+                        Console.WriteLine("Aperte ENTER para sair!");
+                        Console.ReadKey();
+                        break;
+                    case 1:
+                        do
+                        {
+                            Console.WriteLine("Informe a Razão Social [Máximo 50 digítos]: ");
+                            this.RazaoSocial = Console.ReadLine();
+                            if (this.RazaoSocial.Length > 50)
+                            {
+                                Console.WriteLine("\nInforme um nome que contenha até 50 caracteres!");
+
+                            }
+                            else
+                            {
+                                sql = $"UPDATE dbo.CompahiaAerea SET RazaoSocial='{this.RazaoSocial}' WHERE CNPJ='{this.CNPJ}';";
+                                db = new ConexaoBD();
+                                db.Connection(conexaosql, sql);
+                                Console.ReadKey();
+                            }
+                        } while (this.RazaoSocial.Length > 50);
+                        break;
+
+                    case 2:
+                        TimeSpan result;
+                        do
+                        {
+                            Console.Write("Informe a data de abertura da Companhia [mês/dia/ano] : ");
+                            DataAbertura = DateTime.Parse(Console.ReadLine());
+
+                            result = DateTime.Now - DataAbertura;
+
+                            if (result.Days / 30 < 6)
+                            {
+                                Console.WriteLine($"A companhia tem {result.Days / 30} meses");
+                                Console.WriteLine("\nO tempo é insufiente para finalizar o cadastro!");
+                                Console.WriteLine("Pressione ENTER para informar uma data válida!.");
+                                Console.ReadKey();
+                            }
+                        } while (result.Days / 30 < 6);
+                        sql = $"UPDATE dbo.CompanhiaAerea SET DataAbertura='{DataAbertura}' WHERE CNPJ='{this.CNPJ}';";
+                        db = new ConexaoBD();
+                        db.Connection(conexaosql, sql);
+                        Console.ReadKey();
+                        break;
+
+                    case 3:
+                        do
+                        {
+                            Console.Write("Informe a data e a hora do último voo operado [mês/dia/ano] : ");
+                            UltimoVoo = DateTime.Parse(Console.ReadLine());
+
+                            if (UltimoVoo > DateTime.Now)
+                            {
+                                Console.WriteLine("A data do último voo não pode ser maior que a data atual!");
+
+                            }
+                        } while (UltimoVoo > DateTime.Now);
+                        sql = $"UPDATE dbo.CompanhiaAerea SET UltimoVoo='{UltimoVoo}' WHERE CNPJ='{this.CNPJ}';";
+                        db = new ConexaoBD();
+                        db.Connection(conexaosql, sql);
+                        Console.ReadKey();
+                        break;
+
+                    case 4:
+                        DateTime dt;
+                        Console.WriteLine("\nInforme a DATA DO CADASTRO: ");
+                        dt = DateTime.Parse(Console.ReadLine());
+                        while (!DateTime.TryParse(Console.ReadLine(), out dt))
+                        {
+                            if(dt > DateTime.Now)
+                            {
+                                Console.WriteLine("A data do cadastro não pode ser maior que a data atual!");
+                            }
+                            else
+                            {
+                                dt.ToString("dd/MM/yyyy");
+                                sql = $"UPDATE dbo.Passageiro SET Data_Cadastro='{dt}' WHERE CNPJ='{this.CNPJ}';";
+                                db = new ConexaoBD();
+                                db.Connection(conexaosql, sql);
+                                Console.ReadKey();
+                            }
+                        }
+                        break;
+
+                    case 5:
+                        do
+                        {
+                            Console.WriteLine("Informe a SITUAÇÃO do cadastro [A - Ativo, I - Inativo]: ");
+                            Situacao = char.Parse(Console.ReadLine());
+                            sql = $"UPDATE dbo.CompanhiaAerea SET Situacao='{Situacao}' WHERE CNPJ='{this.CNPJ}';";
+                            db = new ConexaoBD();
+                            db.Connection(conexaosql, sql);
+                            Console.ReadKey();
+                        } while (Situacao != 'A' && Situacao != 'I');
+                        break;
+                    default:
+                        Console.WriteLine("\nINFORME UMA DAS OPÇÕES DO MENU!");
+                        break;
+                }
+            } while (op < 0 && op < 5);
+        }
+        public void DeletarCompAereaEspecifica(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Informe o CNPJ sem caracteres especiais para localizar o Cadastro:");
+            this.CNPJ = Console.ReadLine(); //TRATAR ERROS SE INFORMAR UM QUE NAO FOI CADASTRADO
+
+            Console.WriteLine("***CADASTRO DE COMPANHIA AEREA***");
+
+            string sql = $"SELECT CNPJ,RazaoSocial,DataAbertura,UltimoVoo,DataCadastro,Situacao  FROM dbo.CompanhiaAerea WHERE CNPJ=('{this.CNPJ}');";
+            db = new ConexaoBD();
+            db.Select(conexaosql, sql);
+            SqlCommand cmd = new SqlCommand(sql, conexaosql);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($"CNPJ: {reader.GetString(0)}");
+                    Console.WriteLine($"Razão Social: {reader.GetString(1)}");
+                    Console.WriteLine($"Data de Abertura: {reader.GetDateTime(2).ToShortDateString()}");
+                    Console.WriteLine($"Data do último voo operado: {reader.GetDateTime(3)}");
+                    Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
+                    Console.WriteLine($"Situação: {reader.GetString(5)}");
+                }
+            }
+            conexaosql.Close();
+            Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+            Console.ReadKey();
+            Console.WriteLine("\nDeseja realmente DELETAR esse cadastro ?Não será possível repensar essa ação...");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    sql = $"DELETE FROM dbo.CompanhiaAerea WHERE CNPJ=('{this.CNPJ}');";
+                    db = new ConexaoBD();
+                    db.Connection(conexaosql, sql);
+                    cmd = new SqlCommand(sql, conexaosql);
+                    Console.WriteLine("CADASTRO DELETADO COM SUCESSO!");
+                    Console.WriteLine("Pressione ENTER para sair...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("Exclusão do cadastro CANCELADA!!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
+        public void DeletarTodasCompanhias(SqlConnection conexaosql)
+        {
+            Console.WriteLine("***DELETAR CADASTRO DE PASSAGEIROS***");
+            Console.WriteLine("\n");
+            string sql = $"SELECT CNPJ,RazaoSocial,DataAbertura,UltimoVoo,DataCadastro,Situacao  FROM dbo.CompanhiaAerea WHERE CNPJ=('{this.CNPJ}');";
+            db = new ConexaoBD();
+            db.Select(conexaosql, sql);
+            SqlCommand cmd = new SqlCommand(sql, conexaosql);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($"CNPJ: {reader.GetString(0)}");
+                    Console.WriteLine($"Razão Social: {reader.GetString(1)}");
+                    Console.WriteLine($"Data de Abertura: {reader.GetDateTime(2).ToShortDateString()}");
+                    Console.WriteLine($"Data do último voo operado: {reader.GetString(3)}");
+                    Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
+                    Console.WriteLine($"Situação: {reader.GetString(5)}");
+                }
+            }
+            conexaosql.Close();
+            Console.WriteLine("\nAperte ENTER para finalizar a visualização...");
+            Console.ReadKey();
+            Console.WriteLine("\nDeseja realmente DELETAR TODOS os CADASTROS? Não será possível repensar essa ação... ");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    sql = $"DELETE FROM dbo.CompanhiaAerea";
+                    db = new ConexaoBD();
+                    db.Connection(conexaosql, sql);
+                    cmd = new SqlCommand(sql, conexaosql);
+                    Console.WriteLine("\nCADASTROS DELETADOS COM SUCESSO!");
+                    Console.WriteLine("Pressione ENTER para sair");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("Exclusão de cadastros CANCELADA!!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
         public static bool ValidarCnpj(string cnpj)
         {
             int[] multiplicador1 = new int[12] { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -171,12 +426,12 @@ namespace OnTheFly_BD
             //limpa caracteres especiais e deixa em minusculo
             cnpj = cnpj.ToLower().Trim();
             cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "").Replace(" ", "");
-            //cnpj = cnpj.Replace("+", "").Replace("*", "").Replace(",", "").Replace("?", "");
-            //cnpj = cnpj.Replace("!", "").Replace("@", "").Replace("#", "").Replace("$", "");
-            //cnpj = cnpj.Replace("%", "").Replace("¨", "").Replace("&", "").Replace("(", "");
-            //cnpj = cnpj.Replace("=", "").Replace("[", "").Replace("]", "").Replace(")", "");
-            //cnpj = cnpj.Replace("{", "").Replace("}", "").Replace(":", "").Replace(";", "");
-            //cnpj = cnpj.Replace("<", "").Replace(">", "").Replace("ç", "").Replace("Ç", "");
+            cnpj = cnpj.Replace("+", "").Replace("*", "").Replace(",", "").Replace("?", "");
+            cnpj = cnpj.Replace("!", "").Replace("@", "").Replace("#", "").Replace("$", "");
+            cnpj = cnpj.Replace("%", "").Replace("¨", "").Replace("&", "").Replace("(", "");
+            cnpj = cnpj.Replace("=", "").Replace("[", "").Replace("]", "").Replace(")", "");
+            cnpj = cnpj.Replace("{", "").Replace("}", "").Replace(":", "").Replace(";", "");
+            cnpj = cnpj.Replace("<", "").Replace(">", "").Replace("ç", "").Replace("Ç", "");
 
             // Se vazio
             if (cnpj.Length == 0)
@@ -262,6 +517,5 @@ namespace OnTheFly_BD
             return cnpj.EndsWith(digito);
 
         }
-
     }
 }

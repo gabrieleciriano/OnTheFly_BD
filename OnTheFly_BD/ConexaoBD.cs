@@ -9,7 +9,7 @@ namespace OnTheFly_BD
 {
     internal class ConexaoBD
     {
-        string conexao = "Data Source=localhost; Initial Catalog=OnTheFly; User Id=sa; Password=MT1860143g;";
+        string conexao = "Data Source=localhost; Initial Catalog=Aeroporto; User Id=sa; Password=MT1860143g;";
         SqlConnection conn;
 
         public ConexaoBD()
