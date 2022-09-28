@@ -17,6 +17,8 @@ namespace OnTheFly_BD
         public DateTime DataCadastro { get; set; } //talvez colocar como string pra converter
         public char Situacao { get; set; } //A - Ativo I - Inativo
         public ConexaoBD db;
+        
+        //Nao se pode deletar nenhum cadastro e sim inativar para nao aparecer na lista 
         public Passageiro()
         {
 
@@ -108,9 +110,53 @@ namespace OnTheFly_BD
 
         public void VisualizarPassageiro(SqlConnection conexaosql)
         {
+            //SELECT DE UM PASSAGEIRO ESPECIFICO
             Console.WriteLine("Informe o CPF para localizar o cadastro: ");
             this.CPF = Console.ReadLine();
+            Console.WriteLine("Deseja localizar os dados do cadastro de um passageiro específico?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    Console.Clear();
+                    string sql = $"SELECT CPF, Nome, DataNascimento, Sexo, Data_Cadastro, UltimaCompra, Situacao  FROM dbo.Passageiro WHERE CPF = ('{this.CPF}');";
+                    db = new ConexaoBD();
+                    db.Connection(conexaosql, sql);
+                    Console.WriteLine("Aperte ENTER para finalizar a localização");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("A localização do cadastro foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
 
+        }
+        public void VisualizarPassageiroAtivo(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Deseja visualizar o cadastro ATIVO de todos os passageiros?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    Console.Clear();
+                    string sql = $"SELECT CPF, Nome, DataNascimento, Sexo, Data_Cadastro, UltimaCompra, Situacao  FROM dbo.Passageiro WHERE Situacao = ('A');";
+                    db = new ConexaoBD();
+                    db.Connection(conexaosql, sql);
+                    Console.WriteLine("Aperte ENTER para finalizar a visualização");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("A visualização dos cadastros foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
 
         }
         //Já com o update
