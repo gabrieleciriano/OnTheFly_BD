@@ -190,11 +190,51 @@ namespace OnTheFly_BD
                 }
             } while (opc != 1 && opc != 2);
         }
-
-        public void VisualizarVoosAtivos()
+        public void VisualizarVoosAtivos(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Deseja visualizar o cadastro ATIVO de TODOS os Voos?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    //Console.Clear();
+                    Console.WriteLine("***DADOS DO CADASTRO DO VOO***");
+                    Console.WriteLine("\n");
+                    string sql = $"SELECT IdVoo,IdAeronave,DataVoo,DataCadastro,Destino,AssentosOcupados,Situacao  FROM dbo.Voo WHERE Situacao=('A');";
+                    db = new ConexaoBD();
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"IdVoo: {reader.GetString(0)}");
+                            Console.WriteLine($"Inscrição da Aeronave: {reader.GetString(1)}");
+                            Console.WriteLine($"Data do voo: {reader.GetDateTime(2)}");
+                            Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
+                            Console.WriteLine($"IATA do Destino: {reader.GetString(4)}");
+                            Console.WriteLine($"Quantidade de Assentos Ocupados: {reader.GetInt32(5)}");
+                            Console.WriteLine($"Situação: {reader.GetString(6)}");
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("A localização do cadastro foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
+        public void VisualizarVoosInativos(SqlConnection conexaosql)
         {
 
         }
+
         public int GeradorDeId()
         {
             Random rand = new Random();
@@ -212,5 +252,6 @@ namespace OnTheFly_BD
             }
             return aux;
         }
+
     }
 }

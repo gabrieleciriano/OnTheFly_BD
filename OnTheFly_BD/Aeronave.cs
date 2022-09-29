@@ -355,6 +355,7 @@ namespace OnTheFly_BD
                 }
             } while (opc != 1 && opc != 2);
         }
+        //vizualizar aeronaves inativas
         public void DeletarAeronaveEspecifica(SqlConnection conexaosql)
         {
             Console.WriteLine("Informe a INSCRIÇÃO da Aeronave para localizar o Cadastro [XX-XXX]:");
