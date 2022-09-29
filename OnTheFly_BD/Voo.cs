@@ -21,7 +21,7 @@ namespace OnTheFly_BD
         ConexaoBD banco = new ConexaoBD();
         CompanhiaAerea ca = new CompanhiaAerea();
         Aeronave a = new Aeronave();
-
+        Voo v = new Voo();
         public Voo()
         {
 
@@ -30,33 +30,7 @@ namespace OnTheFly_BD
         {
 
             int idvoo = GeradorDeId();
-            this.IdVoo = "V" + "-"+idvoo.ToString();
-
-            //Console.WriteLine("**COMPANHIAS AEREAS DISPONÍVEIS PARA CADASTRAR O VOO**");
-            //Console.Clear();
-            //Console.WriteLine("\n");
-            //string sql = $"SELECT CNPJ, RazaoSocial, DataAbertura, UltimoVoo, DataCadastro, Situacao  FROM dbo.CompanhiaAerea WHERE Situacao = ('A');";
-            //db = new ConexaoBD();
-            //db.Select(conexaosql, sql);
-            //SqlCommand cmd = new SqlCommand(sql, conexaosql);
-            //using (SqlDataReader reader = cmd.ExecuteReader())
-            //{
-            //    while (reader.Read())
-            //    {
-            //        Console.WriteLine($"CNPJ: {reader.GetString(0)}");
-            //        Console.WriteLine($"Razão Social: {reader.GetString(1)}");
-            //        Console.WriteLine($"Data de Abertura: {reader.GetDateTime(2).ToShortDateString()}");
-            //        Console.WriteLine($"Data e Hora do último voo: {reader.GetDateTime(3)}");
-            //        Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
-            //        Console.WriteLine($"Situação: {reader.GetString(5)}");
-            //    }
-            //}
-            //conexaosql.Close();
-            //Console.WriteLine("\nAperte ENTER para finalizar a visualização...");
-            //Console.ReadKey();
-            //Console.WriteLine("Informe o CNPJ da companhia aerea (sem caracteres especiais) que deseja cadastrar o voo: ");
-            //ca.CNPJ = Console.ReadLine();
-
+            this.IdVoo = "V" + "-" + idvoo.ToString();
             //1 aeronave opera um voo por vez entao ela nao pode operar varios voos?
             Console.Clear();
             Console.WriteLine("**LISTA DE AERONAVES DISPONÍVEIS**");
@@ -121,7 +95,7 @@ namespace OnTheFly_BD
 
             do
             {
-                Console.WriteLine("Situação: [A - Ativo C - Cancelado]");
+                Console.WriteLine("Situação: [A - Ativo ou C - Cancelado]");
                 Situacao = char.Parse(Console.ReadLine());
             } while (Situacao != 'A' && Situacao != 'I');
 
@@ -148,6 +122,179 @@ namespace OnTheFly_BD
                     Console.WriteLine("CADASTRO DE VOO CANCELADO!");
             } while (escolha != 1 && escolha != 2);
         }
+        public void EditarVoo(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Informe o ID DO VOO para localizar o Cadastro [V-0000]:");
+            this.IdVoo = Console.ReadLine(); //TRATAR ERROS SE INFORMAR UM QUE NAO FOI CADASTRADO
+            //Console.Clear();
+            Console.WriteLine("***DADOS DO CADASTRO DO VOO***");
+            Console.WriteLine("\n");
+            string sql = $"SELECT IdVoo,IdAeronave,DataVoo,DataCadastro,Destino,AssentosOcupados,Situacao  FROM dbo.Voo WHERE IdVoo=('{this.IdVoo}');";
+            db = new ConexaoBD();
+            db.Select(conexaosql, sql);
+            SqlCommand cmd = new SqlCommand(sql, conexaosql);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($"IdVoo: {reader.GetString(0)}");
+                    Console.WriteLine($"Inscrição da Aeronave: {reader.GetString(1)}");
+                    Console.WriteLine($"Data do voo: {reader.GetDateTime(2)}");
+                    Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
+                    Console.WriteLine($"IATA do Destino: {reader.GetString(4)}");
+                    Console.WriteLine($"Quantidade de Assentos Ocupados: {reader.GetInt32(5)}");
+                    Console.WriteLine($"Situação: {reader.GetString(6)}");
+                    Console.WriteLine("------------------------------------------------------------");
+                }
+            }
+            conexaosql.Close();
+            Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+            Console.ReadKey();
+            int opc = -1;
+            do
+            {
+              
+                Console.WriteLine(">>> EDITAR CADASTRO VOO<<<");
+                Console.WriteLine("0 - SAIR");
+                Console.WriteLine("1 - AERONAVE");
+                Console.WriteLine("2 - DATA DO VOO");
+                Console.WriteLine("3 - DATA DO CADASTRO DO VOO");
+                Console.WriteLine("4 - DESTINO");
+                Console.WriteLine("5 - QUANTIDADE ASSENTOS OCUPADOS");
+                Console.WriteLine("6 - SITUAÇÃO DO CADASTRO ");
+                Console.WriteLine("\nEscolha entre as opções, o/os dados que deseja editar no Cadastro: ");
+                int op = int.Parse(Console.ReadLine());
+                switch (op)
+                {
+                    case 0:
+                        Console.WriteLine("Aperte ENTER para sair...");
+                        Console.ReadKey();
+                        break;
+                    case 1:
+                        Console.WriteLine("**LISTA DE AERONAVES DISPONÍVEIS**");
+                        Console.WriteLine("\n");
+                        sql = $"SELECT Inscricao,Capacidade,DataCadastro,CompanhiaAerea,Situacao FROM dbo.Aeronave WHERE Situacao = ('A');";
+                        db = new ConexaoBD();
+                        db.Select(conexaosql, sql);
+                        cmd = new SqlCommand(sql, conexaosql);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Console.WriteLine($"Id Aeronave: {reader.GetString(0)}");
+                                Console.WriteLine($"Capacidade: {reader.GetInt32(1)}");
+                                Console.WriteLine($"Data em que a Aeronave foi cadastrada: {reader.GetDateTime(2)}");
+                                Console.WriteLine($"CNPJ da Companhia Aerea que a Aeronave pertence: {reader.GetString(3)}");
+                                Console.WriteLine($"Situação: {reader.GetString(4)}");
+                                Console.WriteLine("------------------------------------------------------------");
+                            }
+                        }
+                        conexaosql.Close();
+                        Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+                        Console.ReadKey();
+                        Console.Clear();
+                        Console.WriteLine("Informe a Aeronave que irá operar este voo: ");
+                        string aero = Console.ReadLine();
+                        sql = $"UPDATE dbo.Voo SET IdAeronave='{aero}' WHERE IdVoo='{this.IdVoo}';";
+                        db = new ConexaoBD();
+                        db.Connection(conexaosql, sql);
+                        Console.WriteLine("\nCADASTRO ATUALIZADO COM SUCESSO!");
+                        Console.ReadKey();
+                        break;
+
+                    case 2:
+                        Console.Write("Informe a data e hora de partida do voo [dd/mm/aaaa hh:mm]: ");
+                        DateTime dataVoo;
+                        while (!DateTime.TryParse(Console.ReadLine(), out dataVoo))
+                        {
+                            Console.Write("Informe a data e a hora de partida do voo:  ");
+                        }
+                        if (dataVoo <= DateTime.Now)
+                        {
+                            Console.WriteLine("Informe uma data válida para a partida do voo!");
+                        }
+                        else
+                        {
+                            DataVoo = dataVoo;
+                        }
+                        sql = $"UPDATE dbo.Voo SET DataVoo='{DataVoo}' WHERE IdVoo='{this.IdVoo}';";
+                        db = new ConexaoBD();
+                        db.Connection(conexaosql, sql);
+                        Console.WriteLine("\nCADASTRO ATUALIZADO COM SUCESSO!");
+                        Console.ReadKey();
+                        break;
+
+                    case 3:
+                        DateTime dt;
+                        Console.WriteLine("\nInforme a DATA DO CADASTRO: ");
+                        dt = DateTime.Parse(Console.ReadLine());
+                        while (!DateTime.TryParse(Console.ReadLine(), out dt))
+                        {
+                            if (dt > DateTime.Now)
+                            {
+                                Console.WriteLine("A data do cadastro não pode ser maior que a data atual!");
+                            }
+                            else
+                            {
+                                dt.ToString("dd/MM/yyyy");
+                                sql = $"UPDATE dbo.Voo SET DataCadastro='{dt}' WHERE IdVoo='{this.IdVoo}';";
+                                db = new ConexaoBD();
+                                db.Connection(conexaosql, sql);
+                                Console.WriteLine("\nCADASTRO ATUALIZADO COM SUCESSO!");
+                                Console.ReadKey();
+                            }
+                        }
+                        break;
+
+                    case 4:
+                        //destino
+                        Console.WriteLine("**LISTA DE AEROPORTO DE DESTINO DISPONÍVEIS**");
+                        sql = $"SELECT Sigla FROM dbo.Iatas";
+                        db = new ConexaoBD();
+                        db.Select(conexaosql, sql);
+                        cmd = new SqlCommand(sql, conexaosql);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Console.WriteLine($"Sigla: {reader.GetString(0)}");
+                            }
+                        }
+                        conexaosql.Close();
+                        Console.WriteLine("\nAperte ENTER para finalizar a visualização...");
+                        Console.ReadKey();
+                        Console.WriteLine("Informe o destino desse voo [Ex:GRU]:");
+                        string destino = Console.ReadLine();
+                        sql = $"UPDATE dbo.Voo SET Destino='{Destino}' WHERE IdVoo='{this.IdVoo}';";
+                        db = new ConexaoBD();
+                        db.Connection(conexaosql, sql);
+                        Console.WriteLine("\nCADASTRO ATUALIZADO COM SUCESSO!");
+                        Console.ReadKey();
+
+                        break;
+                    case 5:
+                        //assentos ocupados
+                        break;
+                    case 6:
+                        do
+                        {
+                            Console.WriteLine("Informe a SITUAÇÃO do voo [A - Ativo ou C - Cancelado]: ");
+                            Situacao = char.Parse(Console.ReadLine());
+                            sql = $"UPDATE dbo.Voo SET Situacao='{Situacao}' WHERE IdVoo='{this.IdVoo}';";
+                            db = new ConexaoBD();
+                            db.Connection(conexaosql, sql);
+                            Console.WriteLine("\nCADASTRO ATUALIZADO COM SUCESSO!");
+                            Console.ReadKey();
+                        } while (Situacao != 'A' && Situacao != 'C');
+                        break;
+
+                    default:
+                        Console.WriteLine("\nINFORME UMA DAS OPÇÕES DO MENU!");
+                        break;
+                }
+            } while (opc < 0 && opc < 6);
+        }
+
         public void VisualizarVooEspecifico(SqlConnection conexaosql)
         {
             Console.WriteLine("Informe o ID DO VOO para localizar o Cadastro [V-0000]:");
@@ -178,6 +325,8 @@ namespace OnTheFly_BD
                             Console.WriteLine($"IATA do Destino: {reader.GetString(4)}");
                             Console.WriteLine($"Quantidade de Assentos Ocupados: {reader.GetInt32(5)}");
                             Console.WriteLine($"Situação: {reader.GetString(6)}");
+                            Console.WriteLine("------------------------------------------------------------");
+
                         }
                     }
                     conexaosql.Close();
@@ -218,6 +367,7 @@ namespace OnTheFly_BD
                             Console.WriteLine($"IATA do Destino: {reader.GetString(4)}");
                             Console.WriteLine($"Quantidade de Assentos Ocupados: {reader.GetInt32(5)}");
                             Console.WriteLine($"Situação: {reader.GetString(6)}");
+                            Console.WriteLine("------------------------------------------------------------");
                         }
                     }
                     conexaosql.Close();
@@ -230,11 +380,148 @@ namespace OnTheFly_BD
                 }
             } while (opc != 1 && opc != 2);
         }
-        public void VisualizarVoosInativos(SqlConnection conexaosql)
+        public void VisualizarVoosCancelados(SqlConnection conexaosql)
         {
-
+            Console.WriteLine("Deseja visualizar TODOS os Voos que foram cancelados?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    //Console.Clear();
+                    Console.WriteLine("***DADOS DO CADASTRO DO VOO***");
+                    Console.WriteLine("\n");
+                    string sql = $"SELECT IdVoo,IdAeronave,DataVoo,DataCadastro,Destino,AssentosOcupados,Situacao  FROM dbo.Voo WHERE Situacao=('C');";
+                    db = new ConexaoBD();
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"IdVoo: {reader.GetString(0)}");
+                            Console.WriteLine($"Inscrição da Aeronave: {reader.GetString(1)}");
+                            Console.WriteLine($"Data do voo: {reader.GetDateTime(2)}");
+                            Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
+                            Console.WriteLine($"IATA do Destino: {reader.GetString(4)}");
+                            Console.WriteLine($"Quantidade de Assentos Ocupados: {reader.GetInt32(5)}");
+                            Console.WriteLine($"Situação: {reader.GetString(6)}");
+                            Console.WriteLine("--------------------------------------------------------");
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("A localização do cadastro foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
         }
-
+        public void DeletarTodosVoos(SqlConnection conexaosql)
+        {
+            Console.WriteLine("***DELETAR CADASTRO DE VOOS***");
+            Console.WriteLine("\n");
+            Console.WriteLine("***DADOS DO CADASTRO DO VOO***");
+            Console.WriteLine("\n");
+            //Console.Clear();
+            string sql = $"SELECT IdVoo,IdAeronave,DataVoo,DataCadastro,Destino,AssentosOcupados,Situacao  FROM dbo.Voo WHERE IdVoo=('{this.IdVoo}');";
+            db = new ConexaoBD();
+            db.Select(conexaosql, sql);
+            SqlCommand cmd = new SqlCommand(sql, conexaosql);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($"IdVoo: {reader.GetString(0)}");
+                    Console.WriteLine($"Inscrição da Aeronave: {reader.GetString(1)}");
+                    Console.WriteLine($"Data do voo: {reader.GetDateTime(2)}");
+                    Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
+                    Console.WriteLine($"IATA do Destino: {reader.GetString(4)}");
+                    Console.WriteLine($"Quantidade de Assentos Ocupados: {reader.GetInt32(5)}");
+                    Console.WriteLine($"Situação: {reader.GetString(6)}");
+                    Console.WriteLine("------------------------------------------------------------");
+                }
+            }
+            conexaosql.Close();
+            Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+            Console.ReadKey();
+            Console.WriteLine("\nDeseja realmente DELETAR TODOS os cadastros? Não será possível repensar essa ação...");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    sql = $"DELETE FROM dbo.Voo";
+                    db = new ConexaoBD();
+                    db.Connection(conexaosql, sql);
+                    cmd = new SqlCommand(sql, conexaosql);
+                    Console.WriteLine("\nCADASTRO DELETADO COM SUCESSO!");
+                    Console.WriteLine("Pressione ENTER para sair...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("\nExclusão do cadastro CANCELADA!!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
+        public void DeletarVooEspecifico(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Informe o ID do Voo para localizar o Cadastro [V-0000]:");
+            this.IdVoo = Console.ReadLine();
+            Console.Clear();
+            Console.WriteLine("***DADOS DO CADASTRO DO VOO***");
+            Console.WriteLine("\n");
+            //Console.Clear();
+            string sql = $"SELECT IdVoo,IdAeronave,DataVoo,DataCadastro,Destino,AssentosOcupados,Situacao  FROM dbo.Voo WHERE IdVoo=('{this.IdVoo}');";
+            db = new ConexaoBD();
+            db.Select(conexaosql, sql);
+            SqlCommand cmd = new SqlCommand(sql, conexaosql);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($"IdVoo: {reader.GetString(0)}");
+                    Console.WriteLine($"Inscrição da Aeronave: {reader.GetString(1)}");
+                    Console.WriteLine($"Data do voo: {reader.GetDateTime(2)}");
+                    Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
+                    Console.WriteLine($"IATA do Destino: {reader.GetString(4)}");
+                    Console.WriteLine($"Quantidade de Assentos Ocupados: {reader.GetInt32(5)}");
+                    Console.WriteLine($"Situação: {reader.GetString(6)}");
+                    Console.WriteLine("------------------------------------------------------------");
+                }
+            }
+            conexaosql.Close();
+            Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+            Console.ReadKey();
+            Console.WriteLine("\nDeseja realmente DELETAR esse cadastro ? Não será possível repensar essa ação...");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    sql = $"DELETE FROM dbo.Voo WHERE IdVoo=('{this.IdVoo}');";
+                    db = new ConexaoBD();
+                    db.Connection(conexaosql, sql);
+                    cmd = new SqlCommand(sql, conexaosql);
+                    Console.WriteLine("CADASTRO DELETADO COM SUCESSO!");
+                    Console.WriteLine("Pressione ENTER para sair...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("Exclusão do cadastro CANCELADA!!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
         public int GeradorDeId()
         {
             Random rand = new Random();
