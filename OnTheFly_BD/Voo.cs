@@ -160,10 +160,10 @@ namespace OnTheFly_BD
                 opc = int.Parse(Console.ReadLine());
                 if (opc == 1)
                 {
-                    Console.Clear();
+                    //Console.Clear();
                     Console.WriteLine("***DADOS DO CADASTRO DO VOO***");
                     Console.WriteLine("\n");
-                    string sql = $"SELECT IdVo,IdAeronave,DataVoo,DataCadastro,Destino,AssentosOcupados,Situacao  FROM dbo.Voo WHERE IdVoo=('{this.IdVoo}');";
+                    string sql = $"SELECT IdVoo,IdAeronave,DataVoo,DataCadastro,Destino,AssentosOcupados,Situacao  FROM dbo.Voo WHERE IdVoo=('{this.IdVoo}');";
                     db = new ConexaoBD();
                     db.Select(conexaosql, sql);
                     SqlCommand cmd = new SqlCommand(sql, conexaosql);

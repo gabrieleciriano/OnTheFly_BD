@@ -38,7 +38,6 @@ namespace OnTheFly_BD
             cmd.Connection = conexaosql;
             cmd.ExecuteNonQuery();
         }
-        
     }
 }
 
