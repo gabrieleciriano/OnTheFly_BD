@@ -132,6 +132,8 @@ namespace OnTheFly_BD
                             Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
                             Console.WriteLine($"Data da Última Compra: {reader.GetDateTime(5).ToShortDateString()}");
                             Console.WriteLine($"Situação: {reader.GetString(6)}");
+                            Console.WriteLine("--------------------------------------------------------");
+
                         }
                     }
                     conexaosql.Close();
@@ -171,6 +173,8 @@ namespace OnTheFly_BD
                             Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
                             Console.WriteLine($"Data da Última Compra: {reader.GetDateTime(5).ToShortDateString()}");
                             Console.WriteLine($"Situação: {reader.GetString(6)}");
+                            Console.WriteLine("--------------------------------------------------------");
+
                         }
                     }
                     conexaosql.Close();
@@ -188,6 +192,7 @@ namespace OnTheFly_BD
             string sql;
             Console.WriteLine("Informe o CPF para localizar o Cadastro:");
             this.CPF = Console.ReadLine(); //TRATAR ERROS SE INFORMAR UM QUE NAO FOI CADASTRADO
+            //PASSAR UM SELECT P VER OS DADOS
             int op;
             do
             {
@@ -332,6 +337,8 @@ namespace OnTheFly_BD
                     Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
                     Console.WriteLine($"Data da Última Compra: {reader.GetDateTime(5).ToShortDateString()}");
                     Console.WriteLine($"Situação: {reader.GetString(6)}");
+                    Console.WriteLine("--------------------------------------------------------");
+
                 }
             }
             conexaosql.Close();
@@ -380,6 +387,8 @@ namespace OnTheFly_BD
                     Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
                     Console.WriteLine($"Data da Última Compra: {reader.GetDateTime(5).ToShortDateString()}");
                     Console.WriteLine($"Situação: {reader.GetString(6)}");
+                    Console.WriteLine("--------------------------------------------------------");
+
                 }
             }
             conexaosql.Close();
@@ -509,33 +518,5 @@ namespace OnTheFly_BD
 
             return cpf.EndsWith(digito);
         }
-        public bool cpfAlreadyExists(SqlConnection conn, string CPF)
-        {
-            SqlCommand cmd = new SqlCommand();
-
-            cmd.CommandText = "SELECT CPF FROM dbo.Passageiro WHERE CPF = @CPF;";
-            cmd.Connection = conn;
-            cmd.Parameters.AddWithValue("@CPF", CPF);
-
-            bool cpfAlreadyExists = false;
-            using (SqlDataReader reader = cmd.ExecuteReader())
-            {
-
-                while (reader.Read())
-                {
-                    if (reader.IsDBNull(0))
-                    {
-                        cpfAlreadyExists = false;
-                    }
-
-                    else
-                    {
-                        cpfAlreadyExists = true;
-                    }
-                }
-            }
-            return cpfAlreadyExists;
-        }
-
     }
 }

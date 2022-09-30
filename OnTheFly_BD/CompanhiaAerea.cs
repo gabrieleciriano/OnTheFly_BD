@@ -127,6 +127,8 @@ namespace OnTheFly_BD
                             Console.WriteLine($"Data e Hora do último voo: {reader.GetDateTime(3)}");
                             Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
                             Console.WriteLine($"Situação: {reader.GetString(5)}");
+                            Console.WriteLine("--------------------------------------------------------");
+
                         }
                     }
                     conexaosql.Close();
@@ -166,6 +168,8 @@ namespace OnTheFly_BD
                             Console.WriteLine($"Data e Hora do último voo: {reader.GetDateTime(3)}");
                             Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
                             Console.WriteLine($"Situação: {reader.GetString(5)}");
+                            Console.WriteLine("--------------------------------------------------------");
+
                         }
                     }
                     conexaosql.Close();
@@ -199,6 +203,8 @@ namespace OnTheFly_BD
                     Console.WriteLine($"Data do último voo operado: {reader.GetDateTime(3)}");
                     Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
                     Console.WriteLine($"Situação: {reader.GetString(5)}");
+                    Console.WriteLine("--------------------------------------------------------");
+
                 }
             }
             conexaosql.Close();
@@ -343,6 +349,8 @@ namespace OnTheFly_BD
                     Console.WriteLine($"Data do último voo operado: {reader.GetDateTime(3)}");
                     Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
                     Console.WriteLine($"Situação: {reader.GetString(5)}");
+                    Console.WriteLine("--------------------------------------------------------");
+
                 }
             }
             conexaosql.Close();
@@ -388,6 +396,8 @@ namespace OnTheFly_BD
                     Console.WriteLine($"Data do último voo operado: {reader.GetString(3)}");
                     Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
                     Console.WriteLine($"Situação: {reader.GetString(5)}");
+                    Console.WriteLine("--------------------------------------------------------");
+
                 }
             }
             conexaosql.Close();

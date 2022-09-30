@@ -159,7 +159,6 @@ namespace OnTheFly_BD
             this.Inscricao = Console.ReadLine(); //TRATAR ERROS SE INFORMAR UM QUE NAO FOI CADASTRADO
 
             Console.WriteLine("***AERONAVE CADASTRADA***");
-
             string sql = $"SELECT Inscricao,Capacidade,UltimaVenda,DataCadastro,Situacao,CompanhiaAerea  FROM dbo.Aeronave WHERE Inscricao=('{this.Inscricao}');";
             db = new ConexaoBD();
             db.Select(conexaosql, sql);
@@ -174,6 +173,8 @@ namespace OnTheFly_BD
                     Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
                     Console.WriteLine($"Situação: {reader.GetString(4)}");
                     Console.WriteLine($"CNPJ da Companhia Aerea que a Aeronave pertence: {reader.GetString(5)}");
+                    Console.WriteLine("--------------------------------------------------------");
+
                 }
             }
             conexaosql.Close();
@@ -217,12 +218,12 @@ namespace OnTheFly_BD
                             Console.Write("Informe a data da última venda de passagem [mês/dia/ano] : ");
                             this.UltimaVenda = DateTime.Parse(Console.ReadLine());
 
-                            if (this.UltimaVenda > DateTime.Today)
+                            if (this.UltimaVenda > DateTime.Now)
                             {
                                 Console.WriteLine("A data do último voo não pode ser maior que a data atual!");
 
                             }
-                        } while (this.UltimaVenda > DateTime.Today);
+                        } while (this.UltimaVenda > DateTime.Now);
                         sql = $"UPDATE dbo.Aeronave SET UltimaVenda='{this.UltimaVenda}' WHERE Inscricao='{this.Inscricao}';";
                         db = new ConexaoBD();
                         db.Connection(conexaosql, sql);
@@ -304,6 +305,8 @@ namespace OnTheFly_BD
                             Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
                             Console.WriteLine($"Situação: {reader.GetString(4)}");
                             Console.WriteLine($"CNPJ da Companhia Aerea que a Aeronave pertence: {reader.GetString(5)}");
+                            Console.WriteLine("--------------------------------------------------------");
+
                         }
                     }
                     conexaosql.Close();
@@ -343,6 +346,8 @@ namespace OnTheFly_BD
                             Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
                             Console.WriteLine($"Situação: {reader.GetString(4)}");
                             Console.WriteLine($"CNPJ da Companhia Aerea que a Aeronave pertence: {reader.GetString(5)}");
+                            Console.WriteLine("--------------------------------------------------------");
+
                         }
                     }
                     conexaosql.Close();
@@ -377,6 +382,8 @@ namespace OnTheFly_BD
                     Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
                     Console.WriteLine($"Situação: {reader.GetString(4)}");
                     Console.WriteLine($"CNPJ da Companhia Aerea que a Aeronave pertence: {reader.GetString(5)}");
+                    Console.WriteLine("--------------------------------------------------------");
+
                 }
             }
             conexaosql.Close();
@@ -422,6 +429,8 @@ namespace OnTheFly_BD
                     Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
                     Console.WriteLine($"Situação: {reader.GetString(4)}");
                     Console.WriteLine($"CNPJ da Companhia Aerea que a Aeronave pertence: {reader.GetString(5)}");
+                    Console.WriteLine("--------------------------------------------------------");
+
                 }
             }
             conexaosql.Close();

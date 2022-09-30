@@ -153,7 +153,7 @@ namespace OnTheFly_BD
             int opc = -1;
             do
             {
-              
+
                 Console.WriteLine(">>> EDITAR CADASTRO VOO<<<");
                 Console.WriteLine("0 - SAIR");
                 Console.WriteLine("1 - AERONAVE");
@@ -294,7 +294,6 @@ namespace OnTheFly_BD
                 }
             } while (opc < 0 && opc < 6);
         }
-
         public void VisualizarVooEspecifico(SqlConnection conexaosql)
         {
             Console.WriteLine("Informe o ID DO VOO para localizar o Cadastro [V-0000]:");
@@ -425,8 +424,6 @@ namespace OnTheFly_BD
         {
             Console.WriteLine("***DELETAR CADASTRO DE VOOS***");
             Console.WriteLine("\n");
-            Console.WriteLine("***DADOS DO CADASTRO DO VOO***");
-            Console.WriteLine("\n");
             //Console.Clear();
             string sql = $"SELECT IdVoo,IdAeronave,DataVoo,DataCadastro,Destino,AssentosOcupados,Situacao  FROM dbo.Voo WHERE IdVoo=('{this.IdVoo}');";
             db = new ConexaoBD();
@@ -539,6 +536,5 @@ namespace OnTheFly_BD
             }
             return aux;
         }
-
     }
 }
