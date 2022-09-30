@@ -13,7 +13,7 @@ namespace OnTheFly_BD
         public DateTime DataUltimaOp { get; set; }
         public float Valor { get; set; }
         public char Situacao { get; set; }
-        public Voo IdVoo { get; set; }
+        public string IdVoo { get; set; }
         public ConexaoBD db;
         ConexaoBD banco = new ConexaoBD();
         Voo v = new Voo();
@@ -21,6 +21,15 @@ namespace OnTheFly_BD
         public PassagemVoo()
         {
 
+        }
+        public PassagemVoo(string idvoo)
+        {
+            int id = GeradorDeId();
+            this.IdPassagem = "PA" + id.ToString();
+            DataUltimaOp = DateTime.Now;
+            Valor = 500;
+            Situacao = 'L';
+            IdVoo = idvoo;
         }
         public void CadastrarPassagem(SqlConnection conexaosql)
         {

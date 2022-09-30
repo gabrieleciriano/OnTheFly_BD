@@ -108,6 +108,15 @@ namespace OnTheFly_BD
                 {
                     try
                     {
+                        //IDEIA DE COMO GERAR AS ASAGENS ANTES DE GERAR O VOO
+                        //antes de começar o laço perguntar o valor da passagem float valor
+                        //passo junto ao IdVoo
+                        //gera uma unica passagem
+                        //select capacidade from aeronave where inscricao = this inscricao
+                        //chamar um reader p ler a capacidade, atribuir a capacidade a uma variavel int
+                        //fazer um for (i = 1; i <=  int capacidade; i++){
+                        //   Chama a classe passagemvoo dentro do for igual o ex debaixo}
+                        PassagemVoo passagem = new PassagemVoo(IdVoo);
                         sql = $"INSERT INTO dbo.Voo (IdVoo, IdAeronave, DataVoo, DataCadastro, Destino, AssentosOcupados, Situacao) VALUES ('{IdVoo}', '{aero}', '{DataVoo}', '{DataCadastro}', '{destino}', '{AssentosOcupados}', '{Situacao}');";
                         db = new ConexaoBD();
                         db.Connection(conexaosql, sql);
