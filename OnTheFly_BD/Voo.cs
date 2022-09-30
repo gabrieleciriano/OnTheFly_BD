@@ -30,7 +30,7 @@ namespace OnTheFly_BD
         {
 
             int idvoo = GeradorDeId();
-            this.IdVoo = "V" + "-" + idvoo.ToString();
+            this.IdVoo = "V"+ idvoo.ToString();
             //1 aeronave opera um voo por vez entao ela nao pode operar varios voos?
             Console.Clear();
             Console.WriteLine("**LISTA DE AERONAVES DISPONÍVEIS**");
