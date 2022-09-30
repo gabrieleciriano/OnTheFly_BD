@@ -187,6 +187,7 @@ namespace OnTheFly_BD
                 }
             } while (opc != 1 && opc != 2);
         }
+        //visualizar passageiro inativo
         public void EditarPassageiro(SqlConnection conexaosql)
         {
             string sql;

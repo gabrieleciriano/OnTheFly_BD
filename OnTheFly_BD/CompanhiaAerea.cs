@@ -182,6 +182,7 @@ namespace OnTheFly_BD
                 }
             } while (opc != 1 && opc != 2);
         }
+        //visualizar comp inativa
         public void EditarCompahiaAerea(SqlConnection conexaosql)
         {
             Console.WriteLine("Informe o CNPJ sem caracteres especiais para localizar o Cadastro:");
