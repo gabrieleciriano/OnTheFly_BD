@@ -58,7 +58,7 @@ namespace OnTheFly_BD
             string voo = Console.ReadLine();
             v.IdVoo = voo;
             DataUltimaOp = DateTime.Now;
-            Console.Write("Informe o valor das passagens desse voo R$: ");
+            Console.Write("Informe o valor  padrão das passagens desse voo R$: ");
             Valor = float.Parse(Console.ReadLine());
             if (Valor > 9999.99 || Valor < 0)
             {
@@ -85,16 +85,8 @@ namespace OnTheFly_BD
             {
                 Situacao = 'L';
             }
-
-            for (int i = 0; i < int.Parse(aeronave.Capacidade); i++)
-            {
-                stringIdPassagem = "" + idPassagem++;
-
-                cmd.CommandText = $"Insert into PassagemVoo (ID_PassagemVoo, ID_Voo, DataUltima_Operacao, Valor, Situacao ) Values ('{stringIdPassagem}', " +
-                        $"'{stringIdVoo}', '{DateTime.Now.ToShortDateString()}', '{stringValor}', '{'l'}');";
-
-                cmd.ExecuteNonQuery();
-            }
+            //fazer o vinculo da quantidade de assentos do voo com a qt de passagens
+        }
 
         public int GeradorDeId()
         {
