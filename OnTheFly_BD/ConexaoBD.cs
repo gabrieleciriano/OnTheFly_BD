@@ -10,8 +10,6 @@ namespace OnTheFly_BD
     internal class ConexaoBD
     {
         string conexao = "Data Source=localhost; Initial Catalog=OntheFly; User Id=sa; Password=MT1860143g;";
-        SqlConnection conn;
-
         public ConexaoBD()
         {
 
@@ -25,7 +23,7 @@ namespace OnTheFly_BD
         {
 
             conexaosql.Open();
-            SqlCommand cmd = new SqlCommand(sql, conn);
+            SqlCommand cmd = new SqlCommand(sql);
             cmd.Connection = conexaosql;
             cmd.ExecuteNonQuery();
             conexaosql.Close();
@@ -34,7 +32,7 @@ namespace OnTheFly_BD
         {
 
             conexaosql.Open();
-            SqlCommand cmd = new SqlCommand(sql, conn);
+            SqlCommand cmd = new SqlCommand(sql);
             cmd.Connection = conexaosql;
             cmd.ExecuteNonQuery();
         }

@@ -5,20 +5,11 @@ namespace OnTheFly_BD
 {
     internal class Program
     {
-        //static Aeronave a = new Aeronave();
-
-        //static Voo voo = new Voo();
         static void Main(string[] args)
         {
 
             MenuPrincipal();
 
-            //a.CadastrarAeronave(conexaosql);
-            //a.EditarAeronave(conexaosql);
-            //a.VisualizarAeronaveEspecifica(conexaosql);
-            // a.VisualizarAeronavesAtivas(conexaosql);
-            //voo.CadastrarVoo(conexaosql);
-            //voo.VisualizarVooEspecifico(conexaosql);
             //voo.VisualizarVoosAtivos(conexaosql);
             // voo.VisualizarVoosCancelados(conexaosql);
             //voo.DeletarVooEspecifico();
@@ -58,11 +49,26 @@ namespace OnTheFly_BD
                             break;
 
                         case 2:
-
+                            MenuCompAerea();
                             break;
 
                         case 3:
+                            MenuAeronave();
+                            break;
+                        case 4:
+                            MenuVoo();
+                            break;
 
+                        case 5:
+                            MenuPassagem();
+                            break;
+
+                        case 6:
+                            MenuVenda();
+                            break;
+
+                        case 7:
+                            MenuItemVenda();
                             break;
 
                         default:
@@ -238,9 +244,242 @@ namespace OnTheFly_BD
         }
         public static void MenuAeronave()
         {
+            int opc = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine(">>>MENU AERONAVE<<<");
+                Console.WriteLine("1 - Voltar ao Menu Principal");
+                Console.WriteLine("2 - Cadastrar Aeronave");
+                Console.WriteLine("3 - Buscar cadastro específico");
+                Console.WriteLine("4 - Visualizar todos os cadastros ativos");
+                Console.WriteLine("5 - Visualizar todos os cadastros inativos");
+                Console.WriteLine("6 - Editar dados do cadastro");
+                Console.WriteLine("7 - Deletar aeronave específica");
+                Console.WriteLine("8 - Deletar cadastro de todas as aeronaves");
+                Console.WriteLine("\n>>Informe o que deseja acessar...");
+                opc = int.Parse(Console.ReadLine());
+                if (opc <= 0 || opc > 8)
+                    Console.WriteLine("OPÇÃO INVÁLIDA! Informe um número válido para acessar o menu:");
+                else
+                {
+                    Console.Clear();
+                    switch (opc)
+                    {
+                        case 1:
+                            MenuPrincipal();
+                            break;
 
+                        case 2:
+                            Aeronave a = new Aeronave();
+                            ConexaoBD db = new ConexaoBD();
+                            SqlConnection conexaosql = new SqlConnection(db.Caminho());
+                            a.CadastrarAeronave(conexaosql);
+                            break;
+
+                        case 3:
+                            a = new Aeronave();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            a.VisualizarAeronaveEspecifica(conexaosql);
+                            break;
+
+                        case 4:
+                            a = new Aeronave();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            a.VisualizarAeronavesAtivas(conexaosql);
+                            break;
+
+                        case 5:
+                            //visualizar tds inativos
+                            break;
+
+                        case 6:
+                            a = new Aeronave();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            a.EditarAeronave(conexaosql);
+                            break;
+
+                        case 7:
+                            a = new Aeronave();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            a.DeletarAeronaveEspecifica(conexaosql);
+                            break;
+
+                        case 8:
+                            a = new Aeronave();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            a.DeletarTodasAeronaves(conexaosql);
+                            break;
+
+                        default:
+                            Console.WriteLine("OPÇÃO INVÁLIDA! Informe uma das opções segundo o menu!");
+                            break;
+                    }
+                }
+            } while (opc <= 0 || opc > 8);
         }
         public static void MenuVoo()
+        {
+            int opc = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine(">>>MENU VOO<<<");
+                Console.WriteLine("1 - Voltar ao Menu Principal");
+                Console.WriteLine("2 - Cadastrar Voo");
+                Console.WriteLine("3 - Buscar cadastro específico");
+                Console.WriteLine("4 - Visualizar todos os voos ativos");
+                Console.WriteLine("5 - Visualizar todos os voos cancelados");
+                Console.WriteLine("6 - Editar dados do cadastro");
+                Console.WriteLine("7 - Deletar voo específico");
+                Console.WriteLine("8 - Deletar cadastro de todos os voos");
+                Console.WriteLine("\n>>Informe o que deseja acessar...");
+                opc = int.Parse(Console.ReadLine());
+                if (opc <= 0 || opc > 8)
+                    Console.WriteLine("OPÇÃO INVÁLIDA! Informe um número válido para acessar o menu:");
+                else
+                {
+                    Console.Clear();
+                    switch (opc)
+                    {
+                        case 1:
+                            MenuPrincipal();
+                            break;
+
+                        case 2:
+                            Voo voo = new Voo();
+                            ConexaoBD db = new ConexaoBD();
+                            SqlConnection conexaosql = new SqlConnection(db.Caminho());
+                            voo.CadastrarVoo(conexaosql);
+                            break;
+
+                        case 3:
+                            voo = new Voo();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            voo.VisualizarVooEspecifico(conexaosql);
+                            break;
+
+                        case 4:
+                            voo = new Voo();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            voo.VisualizarVoosAtivos(conexaosql);
+                            break;
+
+                        case 5:
+                            voo = new Voo();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            voo.VisualizarVoosCancelados(conexaosql);
+                            break;
+
+                        case 6:
+                            voo = new Voo();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            voo.EditarVoo(conexaosql);
+                            break;
+
+                        case 7:
+                            voo = new Voo();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            voo.DeletarVooEspecifico(conexaosql);
+                            break;
+
+                        case 8:
+                            voo = new Voo();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            voo.DeletarTodosVoos(conexaosql);
+                            break;
+
+                        default:
+                            Console.WriteLine("OPÇÃO INVÁLIDA! Informe uma das opções segundo o menu!");
+                            break;
+                    }
+                }
+            } while (opc <= 0 || opc > 8);
+        }
+        public static void MenuPassagem()
+        {
+            int opc = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine(">>>MENU PASSAGEM<<<");
+                Console.WriteLine("1 - Voltar ao Menu Principal");
+                Console.WriteLine("2 - Cadastrar Passagem");
+                Console.WriteLine("3 - Buscar cadastro específico");
+                Console.WriteLine("4 - Visualizar todas as passagens livres");
+                Console.WriteLine("5 - Visualizar todas as passagens reservadas");
+                Console.WriteLine("6 - Visualizar todas as passagens pagas");
+                Console.WriteLine("7 - Editar dados da passagem");
+                Console.WriteLine("8 - Deletar passagem específica");
+                Console.WriteLine("9 - Deletar todas as passagens");
+                Console.WriteLine("\n>>Informe o que deseja acessar...");
+                opc = int.Parse(Console.ReadLine());
+                if (opc <= 0 || opc > 9)
+                    Console.WriteLine("OPÇÃO INVÁLIDA! Informe um número válido para acessar o menu:");
+                else
+                {
+                    Console.Clear();
+                    switch (opc)
+                    {
+                        case 1:
+                            MenuPrincipal();
+                            break;
+
+                        case 2:
+                            PassagemVoo p = new PassagemVoo();
+                            ConexaoBD db = new ConexaoBD();
+                            SqlConnection conexaosql = new SqlConnection(db.Caminho());
+                            p.CadastrarPassagem(conexaosql);
+                            break;
+
+                        case 3:
+                            
+                            break;
+
+                        case 4:
+                            
+                            break;
+
+                        case 5:
+                            
+                            break;
+
+                        case 6:
+                            
+                            break;
+
+                        case 7:
+                           
+                            break;
+
+                        case 8:
+                           
+                            break;
+
+                        default:
+                            Console.WriteLine("OPÇÃO INVÁLIDA! Informe uma das opções segundo o menu!");
+                            break;
+                    }
+                }
+            } while (opc <= 0 || opc > 9);
+
+        }
+        public static void MenuVenda()
+        {
+
+        }
+        public static void MenuItemVenda()
         {
 
         }

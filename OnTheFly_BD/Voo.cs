@@ -11,17 +11,17 @@ namespace OnTheFly_BD
     {
         public string IdVoo { get; set; } //V0000
         public string Destino { get; set; }
-        public DateTime DataVoo { get; set; } 
+        public DateTime DataVoo { get; set; }
         public DateTime DataCadastro { get; set; }
-        public int AssentosOcupados { get; set; } 
+        public int AssentosOcupados { get; set; }
         public char Situacao { get; set; } //A Ativo ou C Cancelado
         public Aeronave InscricaoAeronave { get; set; }
         public CompanhiaAerea CNPJ { get; set; }
-        public ConexaoBD db;
-        ConexaoBD banco = new ConexaoBD();
-        CompanhiaAerea ca = new CompanhiaAerea();
-        Aeronave a = new Aeronave();
-        Voo v = new Voo();
+        //public ConexaoBD db;
+        //ConexaoBD banco = new ConexaoBD();
+        //CompanhiaAerea ca = new CompanhiaAerea();
+        //Aeronave a = new Aeronave();
+        //Voo v = new Voo();
         public Voo()
         {
 
@@ -30,13 +30,12 @@ namespace OnTheFly_BD
         {
 
             int idvoo = GeradorDeId();
-            this.IdVoo = "V"+ idvoo.ToString();
-            //1 aeronave opera um voo por vez entao ela nao pode operar varios voos?
+            this.IdVoo = "V" + idvoo.ToString();
             Console.Clear();
             Console.WriteLine("**LISTA DE AERONAVES DISPONÍVEIS**");
             Console.WriteLine("\n");
             string sql = $"SELECT Inscricao,Capacidade,DataCadastro,CompanhiaAerea,Situacao FROM dbo.Aeronave WHERE Situacao = ('A');";
-            db = new ConexaoBD();
+            ConexaoBD db = new ConexaoBD();
             db.Select(conexaosql, sql);
             SqlCommand cmd = new SqlCommand(sql, conexaosql);
             using (SqlDataReader reader = cmd.ExecuteReader())
@@ -53,12 +52,11 @@ namespace OnTheFly_BD
             conexaosql.Close();
             Console.WriteLine("\nAperte ENTER para finalizar a localização...");
             Console.ReadKey();
-            Console.Clear();
             Console.WriteLine("Informe a Aeronave que irá operar este voo: ");
             string aero = Console.ReadLine();
             Console.WriteLine("**LISTA DE AEROPORTO DE DESTINO DISPONÍVEIS**");
             sql = $"SELECT Sigla FROM dbo.Iatas";
-            db = new ConexaoBD();
+            // db = new ConexaoBD();
             db.Select(conexaosql, sql);
             cmd = new SqlCommand(sql, conexaosql);
             using (SqlDataReader reader = cmd.ExecuteReader())
@@ -75,29 +73,36 @@ namespace OnTheFly_BD
             string destino = Console.ReadLine();
             //Data e hora do voo
             Console.Write("Informe a data e hora de partida do voo [dd/mm/aaaa hh:mm]: ");
-            DateTime dataVoo;
-            while (!DateTime.TryParse(Console.ReadLine(), out dataVoo))
-            {
-                Console.Write("Informe a data e a hora de partida do voo:  ");
-            }
-            if (dataVoo <= DateTime.Now)
+            DataVoo = DateTime.Parse(Console.ReadLine());
+            if (DataVoo <= DateTime.Now)
             {
                 Console.WriteLine("Informe uma data válida para a partida do voo!");
             }
-            else
-            {
-                DataVoo = dataVoo;
-            }
+
+            //DateTime dataVoo;
+            //while (!DateTime.TryParse(Console.ReadLine(), out dataVoo))
+            //{
+            //    Console.Write("Informe a data e a hora de partida do voo:  ");
+            //}
+            //if (dataVoo <= DateTime.Now)
+            //{
+            //    Console.WriteLine("Informe uma data válida para a partida do voo!");
+            //}
+            //else
+            //{
+            //    DataVoo = dataVoo;
+            //}
 
             DataCadastro = DateTime.Now;
-            //Console.WriteLine("Quantidades de Assentos Ocupados:");
             AssentosOcupados = 0;
-
             do
             {
                 Console.WriteLine("Situação: [A - Ativo ou C - Cancelado]");
                 Situacao = char.Parse(Console.ReadLine());
             } while (Situacao != 'A' && Situacao != 'I');
+
+            //Mostrando o ID voo na tela...
+            Console.WriteLine($"O Id desse voo é: {IdVoo}");
 
             Console.WriteLine("Deseja realmente efetuar esse cadastro ? Informe [1 - SIM 2 - NÃO]: ");
             int escolha;
@@ -108,22 +113,14 @@ namespace OnTheFly_BD
                 {
                     try
                     {
-                        //IDEIA DE COMO GERAR AS ASAGENS ANTES DE GERAR O VOO
-                        //antes de começar o laço perguntar o valor da passagem float valor
-                        //passo junto ao IdVoo
-                        //gera uma unica passagem
-                        //select capacidade from aeronave where inscricao = this inscricao
-                        //chamar um reader p ler a capacidade, atribuir a capacidade a uma variavel int
-                        //fazer um for (i = 1; i <=  int capacidade; i++){
-                        //   Chama a classe passagemvoo dentro do for igual o ex debaixo}
-                        Console.WriteLine("Informe o valor das passagens desse voo: ");
-                        float valor = int.Parse(Console.ReadLine());
-
-                        PassagemVoo passagem = new PassagemVoo(IdVoo);
+                        //Console.WriteLine("Informe o valor das passagens desse voo: ");
+                        //float valor = int.Parse(Console.ReadLine());
+                        //PassagemVoo passagem = new PassagemVoo(IdVoo);
                         sql = $"INSERT INTO dbo.Voo (IdVoo, IdAeronave, DataVoo, DataCadastro, Destino, AssentosOcupados, Situacao) VALUES ('{IdVoo}', '{aero}', '{DataVoo}', '{DataCadastro}', '{destino}', '{AssentosOcupados}', '{Situacao}');";
                         db = new ConexaoBD();
                         db.Connection(conexaosql, sql);
                         Console.WriteLine("O CADASTRO FOI EFETUADO COM SUCESSO!");
+                        Console.ReadKey();
                     }
                     catch (Exception)
                     {
@@ -142,7 +139,7 @@ namespace OnTheFly_BD
             Console.WriteLine("***DADOS DO CADASTRO DO VOO***");
             Console.WriteLine("\n");
             string sql = $"SELECT IdVoo,IdAeronave,DataVoo,DataCadastro,Destino,AssentosOcupados,Situacao  FROM dbo.Voo WHERE IdVoo=('{this.IdVoo}');";
-            db = new ConexaoBD();
+            ConexaoBD db = new ConexaoBD();
             db.Select(conexaosql, sql);
             SqlCommand cmd = new SqlCommand(sql, conexaosql);
             using (SqlDataReader reader = cmd.ExecuteReader())
@@ -308,7 +305,7 @@ namespace OnTheFly_BD
         }
         public void VisualizarVooEspecifico(SqlConnection conexaosql)
         {
-            Console.WriteLine("Informe o ID DO VOO para localizar o Cadastro [V-0000]:");
+            Console.WriteLine("Informe o ID DO VOO para localizar o Cadastro SEM caracteres especiais [V0000]:");
             this.IdVoo = Console.ReadLine(); //TRATAR ERROS SE INFORMAR UM QUE NAO FOI CADASTRADO
             Console.WriteLine("Deseja visualizar os dados desse voo específico?");
             Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
@@ -322,7 +319,7 @@ namespace OnTheFly_BD
                     Console.WriteLine("***DADOS DO CADASTRO DO VOO***");
                     Console.WriteLine("\n");
                     string sql = $"SELECT IdVoo,IdAeronave,DataVoo,DataCadastro,Destino,AssentosOcupados,Situacao  FROM dbo.Voo WHERE IdVoo=('{this.IdVoo}');";
-                    db = new ConexaoBD();
+                    ConexaoBD db = new ConexaoBD();
                     db.Select(conexaosql, sql);
                     SqlCommand cmd = new SqlCommand(sql, conexaosql);
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -364,7 +361,7 @@ namespace OnTheFly_BD
                     Console.WriteLine("***DADOS DO CADASTRO DO VOO***");
                     Console.WriteLine("\n");
                     string sql = $"SELECT IdVoo,IdAeronave,DataVoo,DataCadastro,Destino,AssentosOcupados,Situacao  FROM dbo.Voo WHERE Situacao=('A');";
-                    db = new ConexaoBD();
+                    ConexaoBD db = new ConexaoBD();
                     db.Select(conexaosql, sql);
                     SqlCommand cmd = new SqlCommand(sql, conexaosql);
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -405,7 +402,7 @@ namespace OnTheFly_BD
                     Console.WriteLine("***DADOS DO CADASTRO DO VOO***");
                     Console.WriteLine("\n");
                     string sql = $"SELECT IdVoo,IdAeronave,DataVoo,DataCadastro,Destino,AssentosOcupados,Situacao  FROM dbo.Voo WHERE Situacao=('C');";
-                    db = new ConexaoBD();
+                    ConexaoBD db = new ConexaoBD();
                     db.Select(conexaosql, sql);
                     SqlCommand cmd = new SqlCommand(sql, conexaosql);
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -438,7 +435,7 @@ namespace OnTheFly_BD
             Console.WriteLine("\n");
             //Console.Clear();
             string sql = $"SELECT IdVoo,IdAeronave,DataVoo,DataCadastro,Destino,AssentosOcupados,Situacao  FROM dbo.Voo WHERE IdVoo=('{this.IdVoo}');";
-            db = new ConexaoBD();
+            ConexaoBD db = new ConexaoBD();
             db.Select(conexaosql, sql);
             SqlCommand cmd = new SqlCommand(sql, conexaosql);
             using (SqlDataReader reader = cmd.ExecuteReader())
@@ -482,14 +479,14 @@ namespace OnTheFly_BD
         }
         public void DeletarVooEspecifico(SqlConnection conexaosql)
         {
-            Console.WriteLine("Informe o ID do Voo para localizar o Cadastro [V-0000]:");
+            Console.WriteLine("Informe o ID do Voo para localizar o Cadastro SEM caracteres especiais [V0000]:");
             this.IdVoo = Console.ReadLine();
             Console.Clear();
             Console.WriteLine("***DADOS DO CADASTRO DO VOO***");
             Console.WriteLine("\n");
             //Console.Clear();
             string sql = $"SELECT IdVoo,IdAeronave,DataVoo,DataCadastro,Destino,AssentosOcupados,Situacao  FROM dbo.Voo WHERE IdVoo=('{this.IdVoo}');";
-            db = new ConexaoBD();
+            ConexaoBD db = new ConexaoBD();
             db.Select(conexaosql, sql);
             SqlCommand cmd = new SqlCommand(sql, conexaosql);
             using (SqlDataReader reader = cmd.ExecuteReader())

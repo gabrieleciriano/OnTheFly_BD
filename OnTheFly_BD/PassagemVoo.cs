@@ -14,10 +14,6 @@ namespace OnTheFly_BD
         public float Valor { get; set; }
         public char Situacao { get; set; }
         public string IdVoo { get; set; }
-        public ConexaoBD db;
-        ConexaoBD banco = new ConexaoBD();
-        Voo v = new Voo();
-
         public PassagemVoo()
         {
 
@@ -65,6 +61,7 @@ namespace OnTheFly_BD
             Console.ReadKey();
             Console.WriteLine("\nInforme o ID do voo da passagem [Ex: V000]: ");
             string voo = Console.ReadLine();
+            Voo v = new Voo();
             v.IdVoo = voo;
             DataUltimaOp = DateTime.Now;
             Console.Write("Informe o valor  padrão das passagens desse voo R$: ");
@@ -98,6 +95,7 @@ namespace OnTheFly_BD
         }
         public void EditarPassagem(SqlConnection conexaosql)
         {
+
 
         }
         public void VisualizarPassagemEspecifica()

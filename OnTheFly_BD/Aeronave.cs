@@ -15,14 +15,16 @@ namespace OnTheFly_BD
         public DateTime DataCadastro { get; set; }
         public char Situacao { get; set; }
         public CompanhiaAerea CompanhiaAerea { get; set; }
-        public ConexaoBD db;
-        ConexaoBD banco = new ConexaoBD();
-        CompanhiaAerea ca = new CompanhiaAerea();
+
 
         public Aeronave()
         {
 
         }
+        public ConexaoBD db;
+        ConexaoBD banco = new ConexaoBD();
+        CompanhiaAerea ca = new CompanhiaAerea();
+
         public String SufixoAeronave()
         {
             string sufixo;
@@ -38,15 +40,11 @@ namespace OnTheFly_BD
         }
         public bool VerificarSufixo(String sufixo)
         {
-            int i;
-            for (i = 0; i < 3; i++)
+            for (int i = 0; i < sufixo.Length; i++)
             {
-                char aux = sufixo[i];
-                if (Char.IsLetter(aux))
-                {
-                    return true;
-                }
-                else return false;
+                char c = sufixo[i];
+                if (Char.IsLetter(c))
+                    return false;
             }
             return true;
         }
