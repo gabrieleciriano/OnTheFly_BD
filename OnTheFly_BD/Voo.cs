@@ -11,9 +11,9 @@ namespace OnTheFly_BD
     {
         public string IdVoo { get; set; } //V0000
         public string Destino { get; set; }
-        public DateTime DataVoo { get; set; } // Data 8 dígitos + 4 dígitos da hora
+        public DateTime DataVoo { get; set; } 
         public DateTime DataCadastro { get; set; }
-        public int AssentosOcupados { get; set; } //fazer um contador p nao deixar passar da qt que o aviao suporta
+        public int AssentosOcupados { get; set; } 
         public char Situacao { get; set; } //A Ativo ou C Cancelado
         public Aeronave InscricaoAeronave { get; set; }
         public CompanhiaAerea CNPJ { get; set; }
@@ -116,6 +116,9 @@ namespace OnTheFly_BD
                         //chamar um reader p ler a capacidade, atribuir a capacidade a uma variavel int
                         //fazer um for (i = 1; i <=  int capacidade; i++){
                         //   Chama a classe passagemvoo dentro do for igual o ex debaixo}
+                        Console.WriteLine("Informe o valor das passagens desse voo: ");
+                        float valor = int.Parse(Console.ReadLine());
+
                         PassagemVoo passagem = new PassagemVoo(IdVoo);
                         sql = $"INSERT INTO dbo.Voo (IdVoo, IdAeronave, DataVoo, DataCadastro, Destino, AssentosOcupados, Situacao) VALUES ('{IdVoo}', '{aero}', '{DataVoo}', '{DataCadastro}', '{destino}', '{AssentosOcupados}', '{Situacao}');";
                         db = new ConexaoBD();

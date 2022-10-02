@@ -96,7 +96,26 @@ namespace OnTheFly_BD
             }
             //fazer o vinculo da quantidade de assentos do voo com a qt de passagens
         }
+        public void EditarPassagem(SqlConnection conexaosql)
+        {
 
+        }
+        public void VisualizarPassagemEspecifica()
+        {
+
+        }
+        public void VisualizarTodasPassagens()
+        {
+
+        }
+        public void DeletarPassagemEspecifica()
+        {
+
+        }
+        public void DeletarTodasPassagens()
+        {
+
+        }
         public int GeradorDeId()
         {
             Random rand = new Random();
@@ -114,7 +133,6 @@ namespace OnTheFly_BD
             }
             return aux;
         }
-
     }
 }
 

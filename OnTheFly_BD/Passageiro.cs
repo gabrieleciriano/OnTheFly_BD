@@ -93,7 +93,9 @@ namespace OnTheFly_BD
                         string sql = $"INSERT INTO dbo.Passageiro (CPF, Nome, DataNascimento, Sexo, Data_Cadastro, UltimaCompra, Situacao) VALUES ('{CPF}', '{Nome}', '{DataNascimento}', '{Sexo}', '{DataCadastro}', '{UltimaCompra}', '{Situacao}');";
                         db = new ConexaoBD();
                         db.Connection(conexaosql, sql);
-                        Console.WriteLine("O CADASTRO FOI EFETUADO!");
+                        Console.WriteLine("O CADASTRO FOI EFETUADO COM SUCESSO!");
+                        Console.ReadKey();
+
                     }
                     catch (Exception)
                     {
