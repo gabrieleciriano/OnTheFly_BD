@@ -501,6 +501,70 @@ namespace OnTheFly_BD
         }
         public static void MenuVenda()
         {
+            int opc = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine(">>>MENU VENDA<<<");
+                Console.WriteLine("1 - Voltar ao Menu Principal");
+                Console.WriteLine("2 - Realizar Venda");
+                Console.WriteLine("3 - Buscar uma venda específica");
+                Console.WriteLine("4 - Visualizar todas as vendas");
+                Console.WriteLine("5 - Editar dados de uma venda");
+                Console.WriteLine("6 - Deletar venda específica");
+                Console.WriteLine("7 - Deletar todas as vendas");
+                Console.WriteLine("\n>>Informe o que deseja acessar...");
+                opc = int.Parse(Console.ReadLine());
+                if (opc <= 0 || opc > 7)
+                    Console.WriteLine("OPÇÃO INVÁLIDA! Informe um número válido para acessar o menu:");
+                else
+                {
+                    Console.Clear();
+                    switch (opc)
+                    {
+                        case 1:
+                            MenuPrincipal();
+                            break;
+
+                        case 2:
+                           
+                            break;
+
+                        case 3:
+                          
+                            break;
+
+                        case 4:
+                           
+                            break;
+
+                        case 5:
+                           
+                            break;
+
+                        case 6:
+                           
+                            break;
+
+                        case 7:
+                           
+                            break;
+
+                        case 8:
+                           
+                            break;
+
+                        case 9:
+                           
+                            break;
+
+                        default:
+                            Console.WriteLine("OPÇÃO INVÁLIDA! Informe uma das opções segundo o menu!");
+                            break;
+                    }
+                }
+            } while (opc <= 0 || opc > 7);
+
 
         }
         public static void MenuItemVenda()

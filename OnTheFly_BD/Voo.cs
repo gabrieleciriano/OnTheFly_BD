@@ -72,28 +72,15 @@ namespace OnTheFly_BD
             Console.WriteLine("Informe o destino desse voo [Ex:GRU]:");
             string destino = Console.ReadLine();
             //Data e hora do voo
-            do {
+            do
+            {
                 Console.Write("Informe a data e hora de partida do voo [dd/mm/aaaa hh:mm]: ");
                 DataVoo = DateTime.Parse(Console.ReadLine());
                 if (DataVoo <= DateTime.Now)
                 {
                     Console.WriteLine("Informe uma data válida para a partida do voo!");
                 }
-            }while(DataVoo <= DateTime.Now);
-
-            //DateTime dataVoo;
-            //while (!DateTime.TryParse(Console.ReadLine(), out dataVoo))
-            //{
-            //    Console.Write("Informe a data e a hora de partida do voo:  ");
-            //}
-            //if (dataVoo <= DateTime.Now)
-            //{
-            //    Console.WriteLine("Informe uma data válida para a partida do voo!");
-            //}
-            //else
-            //{
-            //    DataVoo = dataVoo;
-            //}
+            } while (DataVoo <= DateTime.Now);
 
             DataCadastro = DateTime.Now;
             AssentosOcupados = 0;
@@ -115,9 +102,6 @@ namespace OnTheFly_BD
                 {
                     try
                     {
-                        //Console.WriteLine("Informe o valor das passagens desse voo: ");
-                        //float valor = int.Parse(Console.ReadLine());
-                        //PassagemVoo passagem = new PassagemVoo(IdVoo);
                         sql = $"INSERT INTO dbo.Voo (IdVoo, IdAeronave, DataVoo, DataCadastro, Destino, AssentosOcupados, Situacao) VALUES ('{IdVoo}', '{aero}', '{DataVoo}', '{DataCadastro}', '{destino}', '{AssentosOcupados}', '{Situacao}');";
                         db = new ConexaoBD();
                         db.Connection(conexaosql, sql);
@@ -167,7 +151,6 @@ namespace OnTheFly_BD
 
                 Console.WriteLine(">>> EDITAR CADASTRO VOO<<<");
                 Console.WriteLine("0 - SAIR");
-                Console.WriteLine("1 - QUANTIDADE ASSENTOS OCUPADOS");
                 Console.WriteLine("2 - SITUAÇÃO DO CADASTRO ");
                 Console.WriteLine("\nEscolha entre as opções, o/os dados que deseja editar no Cadastro: ");
                 int op = int.Parse(Console.ReadLine());
@@ -178,10 +161,6 @@ namespace OnTheFly_BD
                         Console.ReadKey();
                         break;
                     case 1:
-                     //ALTERAR QT DE ASSENTOS OCUPADOS
-                        break;
-
-                    case 2:
                         do
                         {
                             Console.WriteLine("Informe a SITUAÇÃO do voo [A - Ativo ou C - Cancelado]: ");
@@ -192,28 +171,6 @@ namespace OnTheFly_BD
                             Console.WriteLine("\nCADASTRO ATUALIZADO COM SUCESSO!");
                             Console.ReadKey();
                         } while (Situacao != 'A' && Situacao != 'C');
-                        break;
-
-                    case 3:
-                        DateTime dt;
-                        Console.WriteLine("\nInforme a DATA DO CADASTRO: ");
-                        dt = DateTime.Parse(Console.ReadLine());
-                        while (!DateTime.TryParse(Console.ReadLine(), out dt))
-                        {
-                            if (dt > DateTime.Now)
-                            {
-                                Console.WriteLine("A data do cadastro não pode ser maior que a data atual!");
-                            }
-                            else
-                            {
-                                dt.ToString("dd/MM/yyyy");
-                                sql = $"UPDATE dbo.Voo SET DataCadastro='{dt}' WHERE IdVoo='{this.IdVoo}';";
-                                db = new ConexaoBD();
-                                db.Connection(conexaosql, sql);
-                                Console.WriteLine("\nCADASTRO ATUALIZADO COM SUCESSO!");
-                                Console.ReadKey();
-                            }
-                        }
                         break;
 
                     default:
