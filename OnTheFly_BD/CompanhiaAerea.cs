@@ -184,6 +184,47 @@ namespace OnTheFly_BD
             } while (opc != 1 && opc != 2);
         }
         //visualizar comp inativa
+        public void VisualizarCompanhiaInativa(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Deseja visualizar o cadastro INATIVO de TODAS as Companhias Aereas?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    Console.Clear();
+                    Console.WriteLine("***CADASTRO DAS COMPANHIAS AEREAS***");
+                    Console.WriteLine("\n");
+                    string sql = $"SELECT CNPJ, RazaoSocial, DataAbertura, UltimoVoo, DataCadastro, Situacao  FROM dbo.CompanhiaAerea WHERE Situacao = ('I');";
+                    db = new ConexaoBD();
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"CNPJ: {reader.GetString(0)}");
+                            Console.WriteLine($"Razão Social: {reader.GetString(1)}");
+                            Console.WriteLine($"Data de Abertura: {reader.GetDateTime(2).ToShortDateString()}");
+                            Console.WriteLine($"Data e Hora do último voo: {reader.GetDateTime(3)}");
+                            Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
+                            Console.WriteLine($"Situação: {reader.GetString(5)}");
+                            Console.WriteLine("--------------------------------------------------------");
+
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a visualização");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("\nA visualização dos cadastros foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
         public void EditarCompahiaAerea(SqlConnection conexaosql)
         {
             Console.WriteLine("Informe o CNPJ sem caracteres especiais para localizar o Cadastro:");
