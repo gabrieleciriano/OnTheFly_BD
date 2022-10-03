@@ -214,7 +214,6 @@ namespace OnTheFly_BD
                             break;
 
                         case 5:
-                            //visualizar tds inativos
                             ca = new CompanhiaAerea();
                             db = new ConexaoBD();
                             conexaosql = new SqlConnection(db.Caminho());
@@ -299,7 +298,10 @@ namespace OnTheFly_BD
                             break;
 
                         case 5:
-                            //visualizar tds inativos
+                            a = new Aeronave();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            a.VisualizarAeronavesInativas(conexaosql);
                             break;
 
                         case 6:

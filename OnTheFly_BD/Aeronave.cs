@@ -358,7 +358,47 @@ namespace OnTheFly_BD
                 }
             } while (opc != 1 && opc != 2);
         }
-        //vizualizar aeronaves inativas
+        public void VisualizarAeronavesInativas(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Deseja visualizar o cadastro INATIVO de TODAS as Aeronaves?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    Console.Clear();
+                    Console.WriteLine("***DADOS DOS CADASTROS DAS AERONAVES***");
+                    Console.WriteLine("\n");
+                    string sql = $"SELECT Inscricao,Capacidade,UltimaVenda,DataCadastro,Situacao,CompanhiaAerea  FROM dbo.Aeronave WHERE Situacao = ('I');";
+                    db = new ConexaoBD();
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"Inscricao: {reader.GetString(0)}");
+                            Console.WriteLine($"Capacidade: {reader.GetInt32(1)}");
+                            Console.WriteLine($"Data da última venda de passagem: {reader.GetDateTime(2)}");
+                            Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(3)}");
+                            Console.WriteLine($"Situação: {reader.GetString(4)}");
+                            Console.WriteLine($"CNPJ da Companhia Aerea que a Aeronave pertence: {reader.GetString(5)}");
+                            Console.WriteLine("--------------------------------------------------------");
+
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("A localização do cadastro foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
         public void DeletarAeronaveEspecifica(SqlConnection conexaosql)
         {
             Console.WriteLine("Informe a INSCRIÇÃO da Aeronave para localizar o Cadastro [XX-XXX]:");
