@@ -13,6 +13,7 @@ namespace OnTheFly_BD
         public DateTime DataUltimaOp { get; set; }
         public float Valor { get; set; }
         public char Situacao { get; set; }
+        //deveria passar o IdVoo como Voo IdVoo ?
         public string IdVoo { get; set; }
         public PassagemVoo()
         {
@@ -20,12 +21,12 @@ namespace OnTheFly_BD
         }
         public PassagemVoo(string idvoo)
         {
-            int id = GeradorDeId();
-            this.IdPassagem = "PA" + id.ToString();
-            DataUltimaOp = DateTime.Now;
-            Valor = 500;
-            Situacao = 'L';
-            IdVoo = idvoo;
+            //int id = GeradorDeId();
+            //this.IdPassagem = "PA" + id.ToString();
+            //DataUltimaOp = DateTime.Now;
+            //Valor = 500;
+            //Situacao = 'L';
+            //IdVoo = idvoo;
         }
         public void CadastrarPassagem(SqlConnection conexaosql)
         {
@@ -75,7 +76,7 @@ namespace OnTheFly_BD
             do
             {
                 Console.WriteLine("Deseja pagar as passagens nesse exato momento? [S/N]");
-                Console.WriteLine("Se não desejar pagar as passagens agora, mas, gostaria de reservá-las, por favor, informe R");
+                Console.WriteLine("Se não desejar pagar as passagens agora, mas, gostaria de reservá-las, por favor, informe [R]");
                 escolha = Console.ReadLine().ToUpper();
             } while (escolha != "S" && escolha != "N" && escolha != "R");
             if (escolha == "S")
@@ -84,7 +85,7 @@ namespace OnTheFly_BD
             }
             else if (escolha == "R")
             {
-                Console.WriteLine("As passagens ficarão reservadas até o momento do pagamento.");
+                Console.WriteLine("As passagens ficarão reservadas até o momento do pagamento!");
                 Situacao = 'R';
             }
             else
@@ -92,19 +93,195 @@ namespace OnTheFly_BD
                 Situacao = 'L';
             }
             //fazer o vinculo da quantidade de assentos do voo com a qt de passagens
+            Console.WriteLine($"O Id dessa passagem é: {IdPassagem} ");
+            Console.WriteLine("Deseja realmente efetuar esse cadastro ? Informe [1 - SIM 2 - NÃO]: ");
+            int opc = int.Parse(Console.ReadLine());
+            do
+            {
+                if (opc == 1)
+                {
+                    try
+                    {
+                        
+                        sql = $"INSERT INTO dbo.Passagem (IdPassagem, IdVoo, DataUltimaOp, Valor, Situacao) VALUES ('{IdPassagem}', '{IdVoo}', '{DataUltimaOp}', '{Valor}', '{Situacao}');";
+                        db = new ConexaoBD();
+                        db.Connection(conexaosql, sql);
+                        Console.WriteLine("O CADASTRO FOI EFETUADO COM SUCESSO!");
+                        Console.ReadKey();
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Inválido!");
+                        Console.ReadKey();
+                    }
+                }
+                else
+                    Console.WriteLine("CADASTRO DE VOO CANCELADO!");
+            } while (opc != 1 && opc != 2);
         }
         public void EditarPassagem(SqlConnection conexaosql)
         {
 
 
         }
-        public void VisualizarPassagemEspecifica()
+        public void VisualizarPassagemEspecifica(SqlConnection conexaosql)
         {
+            Console.WriteLine("Informe o ID da PASSAGEM para localizar o Cadastro SEM caracteres especiais [PA0000]:");
+            this.IdPassagem = Console.ReadLine(); //TRATAR ERROS SE INFORMAR UM QUE NAO FOI CADASTRADO
+            Console.WriteLine("Deseja visualizar os dados desse voo específico?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    //Console.Clear();
+                    Console.WriteLine("***DADOS DA PASSAGEM***");
+                    Console.WriteLine("\n");
+                    string sql = $"SELECT IdPassagem,IdVoo,DataUltimaOp,Valor,Situacao  FROM dbo.Voo WHERE IdPassagem=('{this.IdPassagem}');";
+                    ConexaoBD db = new ConexaoBD();
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"Id da Passagem: {reader.GetString(0)}");
+                            Console.WriteLine($"Id do Voo: {reader.GetString(1)}");
+                            Console.WriteLine($"Data da última operação: {reader.GetDateTime(2)}");
+                            Console.WriteLine($"Valor: {reader.GetFloat(3)}");
+                            Console.WriteLine($"Situação: {reader.GetString(4)}");
+                            Console.WriteLine("------------------------------------------------------------");
 
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("A localização do cadastro foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
         }
-        public void VisualizarTodasPassagens()
+        public void VisualizarPassagenslivres(SqlConnection conexaosql)
         {
-
+            Console.WriteLine("Deseja visualizar o cadastro de TODAS as passagens livres?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    //Console.Clear();
+                    Console.WriteLine("***PASSAGENS LIVRES***");
+                    Console.WriteLine("\n");
+                    string sql = $"SELECT IdPassagem,IdVoo,DataUltimaOp,Valor,Situacao  FROM dbo.Passagem WHERE Situacao=('L');";
+                    ConexaoBD db = new ConexaoBD();
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"Id da Passagem: {reader.GetString(0)}");
+                            Console.WriteLine($"Id do Voo: {reader.GetString(1)}");
+                            Console.WriteLine($"Data da última operação: {reader.GetDateTime(2)}");
+                            Console.WriteLine($"Valor: {reader.GetFloat(3)}");
+                            Console.WriteLine($"Situação: {reader.GetString(4)}");
+                            Console.WriteLine("------------------------------------------------------------");
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("A localização do cadastro foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
+        public void VisualizarPassagensCanceladas(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Deseja visualizar o cadastro de TODAS as passagens canceladas?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    //Console.Clear();
+                    Console.WriteLine("***PASSAGENS LIVRES***");
+                    Console.WriteLine("\n");
+                    string sql = $"SELECT IdPassagem,IdVoo,DataUltimaOp,Valor,Situacao  FROM dbo.Passagem WHERE Situacao=('C');";
+                    ConexaoBD db = new ConexaoBD();
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"Id da Passagem: {reader.GetString(0)}");
+                            Console.WriteLine($"Id do Voo: {reader.GetString(1)}");
+                            Console.WriteLine($"Data da última operação: {reader.GetDateTime(2)}");
+                            Console.WriteLine($"Valor: {reader.GetFloat(3)}");
+                            Console.WriteLine($"Situação: {reader.GetString(4)}");
+                            Console.WriteLine("------------------------------------------------------------");
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("A localização do cadastro foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
+        public void VisualizarPassagensReservadas(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Deseja visualizar o cadastro de TODAS as passagens canceladas?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    //Console.Clear();
+                    Console.WriteLine("***PASSAGENS LIVRES***");
+                    Console.WriteLine("\n");
+                    string sql = $"SELECT IdPassagem,IdVoo,DataUltimaOp,Valor,Situacao  FROM dbo.Passagem WHERE Situacao=('R');";
+                    ConexaoBD db = new ConexaoBD();
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"Id da Passagem: {reader.GetString(0)}");
+                            Console.WriteLine($"Id do Voo: {reader.GetString(1)}");
+                            Console.WriteLine($"Data da última operação: {reader.GetDateTime(2)}");
+                            Console.WriteLine($"Valor: {reader.GetFloat(3)}");
+                            Console.WriteLine($"Situação: {reader.GetString(4)}");
+                            Console.WriteLine("------------------------------------------------------------");
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("A localização do cadastro foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
         }
         public void DeletarPassagemEspecifica()
         {

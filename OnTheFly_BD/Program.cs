@@ -444,27 +444,31 @@ namespace OnTheFly_BD
                             break;
 
                         case 3:
-                            
+                            p = new PassagemVoo();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            p.VisualizarPassagemEspecifica(conexaosql);
+
                             break;
 
                         case 4:
-                            
+
                             break;
 
                         case 5:
-                            
+
                             break;
 
                         case 6:
-                            
+
                             break;
 
                         case 7:
-                           
+
                             break;
 
                         case 8:
-                           
+
                             break;
 
                         default:

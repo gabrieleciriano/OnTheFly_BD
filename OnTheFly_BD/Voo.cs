@@ -72,12 +72,14 @@ namespace OnTheFly_BD
             Console.WriteLine("Informe o destino desse voo [Ex:GRU]:");
             string destino = Console.ReadLine();
             //Data e hora do voo
-            Console.Write("Informe a data e hora de partida do voo [dd/mm/aaaa hh:mm]: ");
-            DataVoo = DateTime.Parse(Console.ReadLine());
-            if (DataVoo <= DateTime.Now)
-            {
-                Console.WriteLine("Informe uma data válida para a partida do voo!");
-            }
+            do {
+                Console.Write("Informe a data e hora de partida do voo [dd/mm/aaaa hh:mm]: ");
+                DataVoo = DateTime.Parse(Console.ReadLine());
+                if (DataVoo <= DateTime.Now)
+                {
+                    Console.WriteLine("Informe uma data válida para a partida do voo!");
+                }
+            }while(DataVoo <= DateTime.Now);
 
             //DateTime dataVoo;
             //while (!DateTime.TryParse(Console.ReadLine(), out dataVoo))
@@ -165,12 +167,8 @@ namespace OnTheFly_BD
 
                 Console.WriteLine(">>> EDITAR CADASTRO VOO<<<");
                 Console.WriteLine("0 - SAIR");
-                Console.WriteLine("1 - AERONAVE");
-                Console.WriteLine("2 - DATA DO VOO");
-                Console.WriteLine("3 - DATA DO CADASTRO DO VOO");
-                Console.WriteLine("4 - DESTINO");
-                Console.WriteLine("5 - QUANTIDADE ASSENTOS OCUPADOS");
-                Console.WriteLine("6 - SITUAÇÃO DO CADASTRO ");
+                Console.WriteLine("1 - QUANTIDADE ASSENTOS OCUPADOS");
+                Console.WriteLine("2 - SITUAÇÃO DO CADASTRO ");
                 Console.WriteLine("\nEscolha entre as opções, o/os dados que deseja editar no Cadastro: ");
                 int op = int.Parse(Console.ReadLine());
                 switch (op)
@@ -180,57 +178,20 @@ namespace OnTheFly_BD
                         Console.ReadKey();
                         break;
                     case 1:
-                        Console.WriteLine("**LISTA DE AERONAVES DISPONÍVEIS**");
-                        Console.WriteLine("\n");
-                        sql = $"SELECT Inscricao,Capacidade,DataCadastro,CompanhiaAerea,Situacao FROM dbo.Aeronave WHERE Situacao = ('A');";
-                        db = new ConexaoBD();
-                        db.Select(conexaosql, sql);
-                        cmd = new SqlCommand(sql, conexaosql);
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                Console.WriteLine($"Id Aeronave: {reader.GetString(0)}");
-                                Console.WriteLine($"Capacidade: {reader.GetInt32(1)}");
-                                Console.WriteLine($"Data em que a Aeronave foi cadastrada: {reader.GetDateTime(2)}");
-                                Console.WriteLine($"CNPJ da Companhia Aerea que a Aeronave pertence: {reader.GetString(3)}");
-                                Console.WriteLine($"Situação: {reader.GetString(4)}");
-                                Console.WriteLine("------------------------------------------------------------");
-                            }
-                        }
-                        conexaosql.Close();
-                        Console.WriteLine("\nAperte ENTER para finalizar a localização...");
-                        Console.ReadKey();
-                        Console.Clear();
-                        Console.WriteLine("Informe a Aeronave que irá operar este voo: ");
-                        string aero = Console.ReadLine();
-                        sql = $"UPDATE dbo.Voo SET IdAeronave='{aero}' WHERE IdVoo='{this.IdVoo}';";
-                        db = new ConexaoBD();
-                        db.Connection(conexaosql, sql);
-                        Console.WriteLine("\nCADASTRO ATUALIZADO COM SUCESSO!");
-                        Console.ReadKey();
+                     //ALTERAR QT DE ASSENTOS OCUPADOS
                         break;
 
                     case 2:
-                        Console.Write("Informe a data e hora de partida do voo [dd/mm/aaaa hh:mm]: ");
-                        DateTime dataVoo;
-                        while (!DateTime.TryParse(Console.ReadLine(), out dataVoo))
+                        do
                         {
-                            Console.Write("Informe a data e a hora de partida do voo:  ");
-                        }
-                        if (dataVoo <= DateTime.Now)
-                        {
-                            Console.WriteLine("Informe uma data válida para a partida do voo!");
-                        }
-                        else
-                        {
-                            DataVoo = dataVoo;
-                        }
-                        sql = $"UPDATE dbo.Voo SET DataVoo='{DataVoo}' WHERE IdVoo='{this.IdVoo}';";
-                        db = new ConexaoBD();
-                        db.Connection(conexaosql, sql);
-                        Console.WriteLine("\nCADASTRO ATUALIZADO COM SUCESSO!");
-                        Console.ReadKey();
+                            Console.WriteLine("Informe a SITUAÇÃO do voo [A - Ativo ou C - Cancelado]: ");
+                            Situacao = char.Parse(Console.ReadLine());
+                            sql = $"UPDATE dbo.Voo SET Situacao='{Situacao}' WHERE IdVoo='{this.IdVoo}';";
+                            db = new ConexaoBD();
+                            db.Connection(conexaosql, sql);
+                            Console.WriteLine("\nCADASTRO ATUALIZADO COM SUCESSO!");
+                            Console.ReadKey();
+                        } while (Situacao != 'A' && Situacao != 'C');
                         break;
 
                     case 3:
@@ -255,53 +216,11 @@ namespace OnTheFly_BD
                         }
                         break;
 
-                    case 4:
-                        //destino
-                        Console.WriteLine("**LISTA DE AEROPORTO DE DESTINO DISPONÍVEIS**");
-                        sql = $"SELECT Sigla FROM dbo.Iatas";
-                        db = new ConexaoBD();
-                        db.Select(conexaosql, sql);
-                        cmd = new SqlCommand(sql, conexaosql);
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                Console.WriteLine($"Sigla: {reader.GetString(0)}");
-                            }
-                        }
-                        conexaosql.Close();
-                        Console.WriteLine("\nAperte ENTER para finalizar a visualização...");
-                        Console.ReadKey();
-                        Console.WriteLine("Informe o destino desse voo [Ex:GRU]:");
-                        string destino = Console.ReadLine();
-                        sql = $"UPDATE dbo.Voo SET Destino='{Destino}' WHERE IdVoo='{this.IdVoo}';";
-                        db = new ConexaoBD();
-                        db.Connection(conexaosql, sql);
-                        Console.WriteLine("\nCADASTRO ATUALIZADO COM SUCESSO!");
-                        Console.ReadKey();
-
-                        break;
-                    case 5:
-                        //assentos ocupados
-                        break;
-                    case 6:
-                        do
-                        {
-                            Console.WriteLine("Informe a SITUAÇÃO do voo [A - Ativo ou C - Cancelado]: ");
-                            Situacao = char.Parse(Console.ReadLine());
-                            sql = $"UPDATE dbo.Voo SET Situacao='{Situacao}' WHERE IdVoo='{this.IdVoo}';";
-                            db = new ConexaoBD();
-                            db.Connection(conexaosql, sql);
-                            Console.WriteLine("\nCADASTRO ATUALIZADO COM SUCESSO!");
-                            Console.ReadKey();
-                        } while (Situacao != 'A' && Situacao != 'C');
-                        break;
-
                     default:
                         Console.WriteLine("\nINFORME UMA DAS OPÇÕES DO MENU!");
                         break;
                 }
-            } while (opc < 0 && opc < 6);
+            } while (opc < 0 && opc < 2);
         }
         public void VisualizarVooEspecifico(SqlConnection conexaosql)
         {
