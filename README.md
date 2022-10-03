@@ -10,8 +10,11 @@ de console:
 ## Avisos/Issues
 - Não foram feitos todos os tratamentos de erros possíveis.
 - Classes Venda e Item Venda incompletas.
-- CPF e CNPJ restritod/bloqueados não foram feitos/adicionados.
+- CPF e CNPJ restritos/bloqueados não foram feitos/adicionados.
 - Informar sempre o CPF e CNPJ sem caracteres especiais, somente os números.
+- Informar ID do Voo sempre sem caracteres especiais, em alguns lugares, deixei um exemplo como [V-0000] e está incorreto, deve ser informado como [V0000].
+- Já em Aeronave, devem ser informados com os caracteres especiais.
+- 
 - Para buscar, atualizar e deletar, informar um ID que tenha sido cadastrado, não há tratamento de erros caso o usuário informe um Id que ainda não existe no banco de dados.
 ## Considerações
 - Apesar de ter tido algumas dificuldades durante a montagem do projeto, vejo que ele pode ser melhorado em diversas maneiras, porém, a experiência de conectar as
