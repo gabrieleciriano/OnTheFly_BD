@@ -189,7 +189,47 @@ namespace OnTheFly_BD
                 }
             } while (opc != 1 && opc != 2);
         }
-        //visualizar passageiro inativo
+        public void VisualizarPassageiroInativo(SqlConnection conexaosql)
+        {
+            Console.WriteLine("Deseja visualizar o cadastro INATIVO de todos os passageiros?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    Console.Clear();
+                    string sql = $"SELECT CPF, Nome, DataNascimento, Sexo, Data_Cadastro, UltimaCompra, Situacao  FROM dbo.Passageiro WHERE Situacao = ('I');";
+                    db = new ConexaoBD();
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"Nome: {reader.GetString(1)}");
+                            Console.WriteLine($"CPF: {reader.GetString(0)}");
+                            Console.WriteLine($"Data de Nascimento: {reader.GetDateTime(2).ToShortDateString()}");
+                            Console.WriteLine($"Sexo: {reader.GetString(3)}");
+                            Console.WriteLine($"Data do Cadastro: {reader.GetDateTime(4).ToShortDateString()}");
+                            Console.WriteLine($"Data da Última Compra: {reader.GetDateTime(5).ToShortDateString()}");
+                            Console.WriteLine($"Situação: {reader.GetString(6)}");
+                            Console.WriteLine("--------------------------------------------------------");
+
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a visualização");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("\nA visualização dos cadastros foi cancelada!");
+                }
+            } while (opc != 1 && opc != 2);
+        }
+       
         public void EditarPassageiro(SqlConnection conexaosql)
         {
             string sql;
