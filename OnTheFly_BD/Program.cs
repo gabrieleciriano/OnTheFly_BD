@@ -527,35 +527,25 @@ namespace OnTheFly_BD
                             break;
 
                         case 2:
-                           
+                            Venda venda = new Venda();
+                            ConexaoBD db = new ConexaoBD();
+                            SqlConnection conexaosql = new SqlConnection(db.Caminho());
+                            venda.CadastrarVenda(conexaosql);
                             break;
 
                         case 3:
-                          
                             break;
 
                         case 4:
-                           
                             break;
 
                         case 5:
-                           
                             break;
 
                         case 6:
-                           
                             break;
 
                         case 7:
-                           
-                            break;
-
-                        case 8:
-                           
-                            break;
-
-                        case 9:
-                           
                             break;
 
                         default:
@@ -569,7 +559,39 @@ namespace OnTheFly_BD
         }
         public static void MenuItemVenda()
         {
+            int opc = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine(">>>MENU ITEM VENDA<<<");
+                Console.WriteLine("1 - Voltar ao Menu Principal");
+                Console.WriteLine("2 - Realizar Venda");
+                Console.WriteLine("\n>>Informe o que deseja acessar...");
+                opc = int.Parse(Console.ReadLine());
+                if (opc <= 0 || opc > 7)
+                    Console.WriteLine("OPÇÃO INVÁLIDA! Informe um número válido para acessar o menu:");
+                else
+                {
+                    Console.Clear();
+                    switch (opc)
+                    {
+                        case 1:
+                            MenuPrincipal();
+                            break;
 
+                        case 2:
+                            ItemVenda itemvenda = new ItemVenda();
+                            ConexaoBD db = new ConexaoBD();
+                            SqlConnection conexaosql = new SqlConnection(db.Caminho());
+                            itemvenda.CadastrarItemVenda(conexaosql);
+                            break;
+
+                        default:
+                            Console.WriteLine("OPÇÃO INVÁLIDA! Informe uma das opções segundo o menu!");
+                            break;
+                    }
+                }
+            } while (opc <= 0 || opc > 7);
         }
     }
 }
