@@ -448,27 +448,48 @@ namespace OnTheFly_BD
                             db = new ConexaoBD();
                             conexaosql = new SqlConnection(db.Caminho());
                             p.VisualizarPassagemEspecifica(conexaosql);
-
                             break;
 
                         case 4:
-
+                            p = new PassagemVoo();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            p.VisualizarPassagensLivres(conexaosql);
                             break;
 
                         case 5:
-
+                            p = new PassagemVoo();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            p.VisualizarPassagensReservadas(conexaosql);
                             break;
 
                         case 6:
-
+                            p = new PassagemVoo();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            p.VisualizarPassagensPagas(conexaosql);
                             break;
 
                         case 7:
-
+                            p = new PassagemVoo();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            p.EditarPassagem(conexaosql);
                             break;
 
                         case 8:
+                            p = new PassagemVoo();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            p.DeletarPassagemEspecifica(conexaosql);
+                            break;
 
+                        case 9:
+                            p = new PassagemVoo();
+                            db = new ConexaoBD();
+                            conexaosql = new SqlConnection(db.Caminho());
+                            p.DeletarTodasPassagens(conexaosql);
                             break;
 
                         default:
@@ -477,7 +498,6 @@ namespace OnTheFly_BD
                     }
                 }
             } while (opc <= 0 || opc > 9);
-
         }
         public static void MenuVenda()
         {

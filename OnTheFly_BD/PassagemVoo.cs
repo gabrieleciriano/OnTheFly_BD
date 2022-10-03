@@ -102,7 +102,7 @@ namespace OnTheFly_BD
                 {
                     try
                     {
-                        
+
                         sql = $"INSERT INTO dbo.Passagem (IdPassagem, IdVoo, DataUltimaOp, Valor, Situacao) VALUES ('{IdPassagem}', '{IdVoo}', '{DataUltimaOp}', '{Valor}', '{Situacao}');";
                         db = new ConexaoBD();
                         db.Connection(conexaosql, sql);
@@ -139,7 +139,7 @@ namespace OnTheFly_BD
                     //Console.Clear();
                     Console.WriteLine("***DADOS DA PASSAGEM***");
                     Console.WriteLine("\n");
-                    string sql = $"SELECT IdPassagem,IdVoo,DataUltimaOp,Valor,Situacao  FROM dbo.Voo WHERE IdPassagem=('{this.IdPassagem}');";
+                    string sql = $"SELECT IdPassagem,IdVoo,DataUltimaOp,Valor,Situacao  FROM dbo.Passagem WHERE IdPassagem=('{this.IdPassagem}');";
                     ConexaoBD db = new ConexaoBD();
                     db.Select(conexaosql, sql);
                     SqlCommand cmd = new SqlCommand(sql, conexaosql);
@@ -166,7 +166,7 @@ namespace OnTheFly_BD
                 }
             } while (opc != 1 && opc != 2);
         }
-        public void VisualizarPassagenslivres(SqlConnection conexaosql)
+        public void VisualizarPassagensLivres(SqlConnection conexaosql)
         {
             Console.WriteLine("Deseja visualizar o cadastro de TODAS as passagens livres?");
             Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
@@ -205,7 +205,7 @@ namespace OnTheFly_BD
                 }
             } while (opc != 1 && opc != 2);
         }
-        public void VisualizarPassagensCanceladas(SqlConnection conexaosql)
+        public void VisualizarPassagensPagas(SqlConnection conexaosql)
         {
             Console.WriteLine("Deseja visualizar o cadastro de TODAS as passagens canceladas?");
             Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
@@ -218,7 +218,7 @@ namespace OnTheFly_BD
                     //Console.Clear();
                     Console.WriteLine("***PASSAGENS LIVRES***");
                     Console.WriteLine("\n");
-                    string sql = $"SELECT IdPassagem,IdVoo,DataUltimaOp,Valor,Situacao  FROM dbo.Passagem WHERE Situacao=('C');";
+                    string sql = $"SELECT IdPassagem,IdVoo,DataUltimaOp,Valor,Situacao  FROM dbo.Passagem WHERE Situacao=('P');";
                     ConexaoBD db = new ConexaoBD();
                     db.Select(conexaosql, sql);
                     SqlCommand cmd = new SqlCommand(sql, conexaosql);
@@ -283,13 +283,112 @@ namespace OnTheFly_BD
                 }
             } while (opc != 1 && opc != 2);
         }
-        public void DeletarPassagemEspecifica()
+        public void DeletarPassagemEspecifica(SqlConnection conexaosql)
         {
+            Console.WriteLine("Informe o ID da PASSAGEM para localizar o Cadastro SEM caracteres especiais [PA0000]:");
+            this.IdPassagem = Console.ReadLine(); //TRATAR ERROS SE INFORMAR UM QUE NAO FOI CADASTRADO
+            Console.WriteLine("Deseja visualizar os dados desse voo específico?");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc;
+            do
+            {
+                opc = int.Parse(Console.ReadLine());
+                if (opc == 1)
+                {
+                    //Console.Clear();
+                    Console.WriteLine("***DADOS DA PASSAGEM***");
+                    Console.WriteLine("\n");
+                    string sql = $"SELECT IdPassagem,IdVoo,DataUltimaOp,Valor,Situacao  FROM dbo.Passagem WHERE IdPassagem=('{this.IdPassagem}');";
+                    ConexaoBD db = new ConexaoBD();
+                    db.Select(conexaosql, sql);
+                    SqlCommand cmd = new SqlCommand(sql, conexaosql);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"Id da Passagem: {reader.GetString(0)}");
+                            Console.WriteLine($"Id do Voo: {reader.GetString(1)}");
+                            Console.WriteLine($"Data da última operação: {reader.GetDateTime(2)}");
+                            Console.WriteLine($"Valor: {reader.GetFloat(3)}");
+                            Console.WriteLine($"Situação: {reader.GetString(4)}");
+                            Console.WriteLine("------------------------------------------------------------");
 
+                        }
+                    }
+                    conexaosql.Close();
+                    Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+                    Console.ReadKey();
+                    Console.WriteLine("\nDeseja realmente DELETAR esse cadastro ? Não será possível repensar essa ação...");
+                    Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+                    int opcao = 0;
+                    do
+                    {
+                        opc = int.Parse(Console.ReadLine());
+                        if (opcao == 1)
+                        {
+                            sql = $"DELETE FROM dbo.Passagem WHERE IdPassagem=('{this.IdPassagem}');";
+                            db = new ConexaoBD();
+                            db.Connection(conexaosql, sql);
+                            cmd = new SqlCommand(sql, conexaosql);
+                            Console.WriteLine("CADASTRO DELETADO COM SUCESSO!");
+                            Console.WriteLine("Pressione ENTER para sair...");
+                            Console.ReadKey();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Exclusão do cadastro CANCELADA!!");
+                        }
+                    } while (opcao != 1 && opcao != 2);
+                }
+            } while (opc != 1 && opc != 2);
         }
-        public void DeletarTodasPassagens()
+        public void DeletarTodasPassagens(SqlConnection conexaosql)
         {
 
+            //Console.Clear();
+            Console.WriteLine("***LISTA DE PASSAGENS***");
+            Console.WriteLine("\n");
+            string sql = $"SELECT IdPassagem,IdVoo,DataUltimaOp,Valor,Situacao  FROM dbo.Passagem;";
+            ConexaoBD db = new ConexaoBD();
+            db.Select(conexaosql, sql);
+            SqlCommand cmd = new SqlCommand(sql, conexaosql);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($"Id da Passagem: {reader.GetString(0)}");
+                    Console.WriteLine($"Id do Voo: {reader.GetString(1)}");
+                    Console.WriteLine($"Data da última operação: {reader.GetDateTime(2)}");
+                    Console.WriteLine($"Valor: {reader.GetFloat(3)}");
+                    Console.WriteLine($"Situação: {reader.GetString(4)}");
+                    Console.WriteLine("------------------------------------------------------------");
+
+                }
+            }
+            conexaosql.Close();
+            Console.WriteLine("\nAperte ENTER para finalizar a localização...");
+            Console.ReadKey();
+            Console.WriteLine("\nDeseja realmente DELETAR esse cadastro ? Não será possível repensar essa ação...");
+            Console.WriteLine("Informe [1 - SIM, 2 - NÃO]: ");
+            int opc = int.Parse(Console.ReadLine());
+            int opcao = 0;
+            do
+            {
+                if (opcao == 1)
+                {
+                    sql = $"DELETE FROM dbo.Passagem;";
+                    db = new ConexaoBD();
+                    db.Connection(conexaosql, sql);
+                    cmd = new SqlCommand(sql, conexaosql);
+                    Console.WriteLine("CADASTRO DELETADO COM SUCESSO!");
+                    Console.WriteLine("Pressione ENTER para sair...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("Exclusão do cadastro CANCELADA!!");
+                }
+            } while (opcao != 1 && opcao != 2);
         }
         public int GeradorDeId()
         {
@@ -310,5 +409,9 @@ namespace OnTheFly_BD
         }
     }
 }
+
+
+
+
 
 
